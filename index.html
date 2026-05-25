@@ -5,159 +5,749 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>HATFAM Sprint Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#f5f3ee;--accent:#1a3a5c;--accent2:#8b6e3c;--ink:#0f0e0c;--ink2:#3a3835;--ink3:#6b6860;
-  --rule:#d4d0c8;--white:#fff;--tag:#e8e4db;--green:#2d6a4f;--amber:#b5622a;
+:root {
+  --bg:     #f5f3ee;
+  --accent: #1a3a5c;
+  --accent2:#8b6e3c;
+  --ink:    #0f0e0c;
+  --ink2:   #3a3835;
+  --ink3:   #6b6860;
+  --rule:   #d4d0c8;
+  --white:  #ffffff;
+  --tag:    #e8e4db;
+  --green:  #2d6a4f;
+  --amber:  #b5622a;
+  --sidebar-w: 320px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.5;min-height:100vh;}
-.wrap{max-width:860px;margin:0 auto;padding:0 0 80px;}
 
-/* TOPBAR */
-.topbar{background:var(--accent);display:flex;justify-content:space-between;align-items:center;padding:8px 24px;position:sticky;top:0;z-index:200;}
-.topbar-left{display:flex;align-items:center;gap:12px;}
-.topbar-title{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#8ba8c4;font-weight:500;}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.55;
+  min-height: 100vh;
+}
+
+/* ─── TOPBAR ─────────────────────────────────────────────── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 48px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-wordmark {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  color: #e8e5de;
+  letter-spacing: 0.04em;
+}
+.topbar-divider { width: 1px; height: 16px; background: rgba(255,255,255,0.15); }
+.topbar-sub {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8ba8c4;
+  font-weight: 500;
+}
 
 /* SYNC BADGE */
-.sync-badge{display:flex;align-items:center;gap:6px;padding:4px 12px;border-radius:0;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;border:1px solid transparent;transition:all 0.3s;}
-.sync-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.sync-connecting{background:rgba(181,98,42,0.15);color:#e8a87c;border-color:rgba(181,98,42,0.3);}
-.sync-connecting .dot{background:#e8a87c;animation:pulse 1s infinite;}
-.sync-syncing{background:rgba(139,110,60,0.15);color:#c9a86c;border-color:rgba(139,110,60,0.3);}
-.sync-syncing .dot{background:#c9a86c;animation:pulse 0.5s infinite;}
-.sync-connected{background:rgba(45,106,79,0.15);color:#6bbf95;border-color:rgba(45,106,79,0.3);}
-.sync-connected .dot{background:#6bbf95;}
-.sync-error{background:rgba(155,60,46,0.15);color:#e8897c;border-color:rgba(155,60,46,0.3);}
-.sync-error .dot{background:#e8897c;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.sync-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+  border: 1px solid transparent; border-radius: 2px;
+  transition: all 0.3s;
+}
+.sync-badge .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.sync-connecting { background: rgba(181,98,42,0.15); color: #e8a87c; border-color: rgba(181,98,42,0.3); }
+.sync-connecting .dot { background: #e8a87c; animation: pulse 1s infinite; }
+.sync-syncing    { background: rgba(139,110,60,0.15); color: #c9a86c; border-color: rgba(139,110,60,0.3); }
+.sync-syncing .dot { background: #c9a86c; animation: pulse 0.5s infinite; }
+.sync-connected  { background: rgba(45,106,79,0.15); color: #6bbf95; border-color: rgba(45,106,79,0.3); }
+.sync-connected .dot { background: #6bbf95; }
+.sync-error      { background: rgba(155,60,46,0.15); color: #e8897c; border-color: rgba(155,60,46,0.3); }
+.sync-error .dot { background: #e8897c; }
+@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-/* EDIT MODE BADGE */
-.edit-badge{display:flex;align-items:center;gap:6px;padding:4px 12px;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;cursor:pointer;border:1px solid rgba(255,255,255,0.15);color:#8ba8c4;transition:all 0.2s;}
-.edit-badge:hover{color:#e8e5de;border-color:rgba(255,255,255,0.3);}
-.edit-badge.active{background:rgba(139,110,60,0.2);color:#c9a86c;border-color:rgba(139,110,60,0.4);}
-.edit-badge .lock-icon{font-size:11px;}
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+.edit-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 4px 14px;
+  font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.15);
+  color: #8ba8c4;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.edit-badge:hover { color: #e8e5de; border-color: rgba(255,255,255,0.3); }
+.edit-badge.active { background: rgba(139,110,60,0.2); color: #c9a86c; border-color: rgba(139,110,60,0.4); }
 
-/* PIN MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(10,10,8,0.7);z-index:1000;align-items:center;justify-content:center;}
-.modal-overlay.show{display:flex;}
-.modal{background:var(--white);padding:36px;width:320px;text-align:center;}
-.modal-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent);margin-bottom:8px;}
-.modal-sub{font-size:12px;color:var(--ink3);margin-bottom:24px;}
-.pin-input{width:100%;padding:12px;font-size:16px;text-align:center;border:1.5px solid var(--rule);font-family:'DM Sans',sans-serif;letter-spacing:0.3em;outline:none;margin-bottom:12px;}
-.pin-input:focus{border-color:var(--accent);}
-.pin-btn{width:100%;padding:12px;background:var(--accent);color:#e8e5de;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;}
-.pin-btn:hover{background:#1e4570;}
-.pin-error{font-size:11px;color:#9b3c2e;margin-top:8px;display:none;}
+/* ─── PHASE STEPPER ──────────────────────────────────────── */
+.stepper {
+  background: var(--white);
+  border-bottom: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  height: 52px;
+  gap: 0;
+  overflow-x: auto;
+}
+.stepper-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 20px 0 0;
+  position: relative;
+  flex-shrink: 0;
+}
+.stepper-item:first-child { padding-left: 0; }
+.stepper-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600;
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+.stepper-num.done    { background: var(--accent);  color: #fff; }
+.stepper-num.active  { background: var(--accent2); color: #fff; }
+.stepper-num.pending { background: var(--tag); color: var(--ink3); }
+.stepper-label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  transition: color 0.3s;
+}
+.stepper-label.done    { color: var(--accent); }
+.stepper-label.active  { color: var(--accent2); }
+.stepper-label.pending { color: var(--ink3); }
+.stepper-label small {
+  display: block;
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+.stepper-arrow {
+  width: 28px; height: 1px;
+  background: var(--rule);
+  flex-shrink: 0;
+  margin: 0 4px;
+  position: relative;
+}
+.stepper-arrow::after {
+  content: '';
+  position: absolute;
+  right: -4px; top: -3px;
+  border: 4px solid transparent;
+  border-left-color: var(--rule);
+}
 
-/* HEADER */
-.hdr{background:var(--accent);color:#e8e5de;padding:24px 32px 20px;}
-.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;gap:16px;}
-.hdr-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;line-height:1.1;}
-.hdr-sub{font-size:11px;color:#8ba8c4;margin-top:4px;}
-.hdr-meta{display:flex;gap:20px;flex-wrap:wrap;}
-.hdr-stat-val{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;}
-.hdr-stat-lbl{font-size:10px;color:#8ba8c4;letter-spacing:0.1em;text-transform:uppercase;}
+/* ─── PAGE BODY ──────────────────────────────────────────── */
+.page-body {
+  display: grid;
+  grid-template-columns: 1fr var(--sidebar-w);
+  min-height: calc(100vh - 100px);
+  align-items: start;
+}
 
-/* DAY COUNTER */
-.day-counter{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);padding:12px 20px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
-.day-current{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:#e8e5de;}
-.day-cycle{font-size:11px;color:#8ba8c4;}
-.day-remaining{font-size:11px;color:#c9a86c;}
+/* ─── MAIN CONTENT ───────────────────────────────────────── */
+.main {
+  min-width: 0;
+  border-right: 1px solid var(--rule);
+}
 
-/* PROGRESS */
-.progress-wrap{padding:14px 32px;background:var(--white);border-bottom:1px solid var(--rule);}
-.progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:6px;}
-.progress-bar{height:5px;background:var(--rule);}
-.progress-fill{height:100%;background:var(--accent2);transition:width 0.4s;}
+/* PROJECT HEADER */
+.proj-header {
+  background: var(--accent);
+  color: #e8e5de;
+  padding: 28px 32px 24px;
+}
+.proj-header-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.proj-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+.proj-meta {
+  font-size: 11px;
+  color: #8ba8c4;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.proj-meta span::before {
+  content: '';
+  display: inline-block;
+  width: 1px; height: 10px;
+  background: rgba(139,168,196,0.4);
+  vertical-align: middle;
+  margin-right: 16px;
+}
+.proj-meta span:first-child::before { display: none; }
+.proj-dates {
+  display: flex;
+  gap: 24px;
+  flex-shrink: 0;
+}
+.proj-date-item { text-align: right; }
+.proj-date-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+.proj-date-lbl {
+  font-size: 9px;
+  color: #8ba8c4;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 1px;
+}
 
-/* VIEW-ONLY BANNER */
-.view-banner{background:#f0f4f8;border-bottom:1px solid var(--rule);padding:8px 32px;font-size:11px;color:var(--ink3);display:flex;align-items:center;gap:8px;}
-.view-banner.hidden{display:none;}
+/* ─── TABS ───────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--rule);
+  background: var(--white);
+  padding: 0 32px;
+  overflow-x: auto;
+  gap: 0;
+}
+.tab {
+  padding: 14px 18px;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.tab:hover  { color: var(--accent); }
+.tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* TABS */
-.tabs{display:flex;border-bottom:2px solid var(--rule);padding:0 32px;background:var(--white);overflow-x:auto;}
-.tab{padding:12px 16px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-weight:500;white-space:nowrap;}
-.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.tab:hover{color:var(--accent);}
-.panel{display:none;padding:24px 32px;}
-.panel.active{display:block;}
+/* ─── PANELS ─────────────────────────────────────────────── */
+.panel { display: none; padding: 28px 32px; }
+.panel.active { display: block; }
 
-/* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:20px;}
-.stat-box{background:var(--white);padding:14px;text-align:center;}
-.stat-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:var(--accent);}
-.stat-lbl{font-size:10px;color:var(--ink3);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
+/* ─── PHASES ─────────────────────────────────────────────── */
+.phase {
+  margin-bottom: 12px;
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.phase:hover { box-shadow: 0 2px 12px rgba(15,14,12,0.06); }
 
-/* PHASES */
-.phase{margin-bottom:16px;border:1px solid var(--rule);background:var(--white);}
-.phase-hdr{padding:14px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none;}
-.phase-hdr:hover{background:#faf9f6;}
-.phase-badge{width:38px;height:38px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;}
-.phase-info{flex:1;}
-.phase-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--accent);line-height:1.2;}
-.phase-days{font-size:11px;color:var(--ink3);margin-top:2px;}
-.phase-status{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:3px 9px;font-weight:500;white-space:nowrap;}
-.status-active{background:#fff4e6;color:var(--amber);}
-.status-pending{background:var(--tag);color:var(--ink3);}
-.status-done{background:#e6f0ea;color:var(--green);}
-.phase-toggle{font-size:13px;color:var(--ink3);width:18px;text-align:center;flex-shrink:0;}
-.phase-body{padding:0 18px 18px;border-top:1px solid var(--rule);}
+.phase-hdr {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.phase-hdr:hover { background: #faf9f6; }
+
+.phase-badge {
+  width: 36px; height: 36px;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.phase-info { flex: 1; min-width: 0; }
+.phase-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.25;
+  margin-bottom: 2px;
+}
+.phase-days { font-size: 11px; color: var(--ink3); }
+
+.phase-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+.phase-pct {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink3);
+  min-width: 30px;
+  text-align: right;
+}
+.phase-status {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  font-weight: 600;
+  border-radius: 2px;
+}
+.status-active  { background: #fff4e6; color: var(--amber); }
+.status-pending { background: var(--tag); color: var(--ink3); }
+.status-done    { background: #e6f0ea; color: var(--green); }
+.phase-toggle   { font-size: 11px; color: var(--ink3); width: 16px; text-align: center; }
+
+/* PHASE BODY */
+.phase-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--rule);
+}
+.phase-progress-bar {
+  height: 3px;
+  background: var(--rule);
+  margin: 0 -20px 20px;
+}
+.phase-progress-fill {
+  height: 100%;
+  background: var(--accent2);
+  transition: width 0.4s;
+}
 
 /* DELIVERABLES */
-.deliv-section{margin-top:14px;}
-.deliv-title{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent2);margin-bottom:8px;}
-.deliv-item{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--rule);}
-.deliv-item:last-child{border-bottom:none;}
-.check{width:17px;height:17px;border:1.5px solid var(--rule);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:1px;transition:all 0.15s;position:relative;}
-.check.checked{background:var(--accent);border-color:var(--accent);}
-.check.checked::after{content:'\2713';color:#fff;font-size:11px;}
-.check.locked-checked{background:var(--ink3);border-color:var(--ink3);cursor:not-allowed;}
-.check.locked-checked::after{content:'\2713';color:#fff;font-size:11px;}
-.check.locked-unchecked{cursor:not-allowed;opacity:0.4;}
-.check.view-only{cursor:default;}
-.deliv-text{font-size:12px;color:var(--ink2);line-height:1.5;flex:1;}
-.deliv-text.done{text-decoration:line-through;color:var(--ink3);}
-.deliv-tag{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border:1px solid var(--rule);color:var(--ink3);display:inline-block;margin-top:3px;}
-.lock-indicator{font-size:9px;color:var(--ink3);margin-left:4px;opacity:0.6;}
+.deliv-section { margin-bottom: 18px; }
+.deliv-section:last-of-type { margin-bottom: 0; }
+.deliv-title {
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 10px;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.deliv-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+.deliv-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0ede6;
+}
+.deliv-item:last-child { border-bottom: none; }
+.check {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--rule);
+  border-radius: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+  transition: all 0.15s;
+}
+.check:hover { border-color: var(--accent); }
+.check.checked            { background: var(--accent);  border-color: var(--accent); }
+.check.checked::after     { content: '\2713'; color: #fff; font-size: 10px; }
+.check.locked-checked     { background: var(--ink3); border-color: var(--ink3); cursor: not-allowed; }
+.check.locked-checked::after { content: '\2713'; color: #fff; font-size: 10px; }
+.check.locked-unchecked   { cursor: not-allowed; opacity: 0.35; }
+.check.view-only          { cursor: default; }
+.check.view-only:hover    { border-color: var(--rule); }
 
-/* GATE */
-.gate{margin-top:14px;padding:11px 14px;border-left:3px solid var(--accent2);background:#fdf9f3;}
-.gate-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent2);margin-bottom:4px;}
-.gate-text{font-size:12px;color:var(--ink2);}
+.deliv-content { flex: 1; min-width: 0; }
+.deliv-text {
+  font-size: 12px;
+  color: var(--ink2);
+  line-height: 1.5;
+}
+.deliv-text.done { text-decoration: line-through; color: var(--ink3); }
+.deliv-tag {
+  display: inline-block;
+  margin-top: 3px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border: 1px solid var(--rule);
+  color: var(--ink3);
+  border-radius: 2px;
+}
 
-/* DAILY LOG */
-.day-table{width:100%;border-collapse:collapse;}
-.day-table thead tr{background:var(--accent);}
-.day-table thead td{color:#e8e5de;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;font-weight:500;padding:9px 10px;}
-.day-table tbody td{padding:9px 10px;font-size:12px;color:var(--ink2);border-bottom:1px solid var(--rule);vertical-align:top;}
-.day-num{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--accent);text-align:center;}
-.today-row td{background:#fffbf5;}
-.active-row td{background:#f0f4f8;}
-.day-badge{font-size:9px;padding:3px 7px;letter-spacing:0.08em;text-transform:uppercase;display:inline-block;}
-.db-a{background:#fff4e6;color:var(--amber);}
-.db-p{background:var(--tag);color:var(--ink3);}
-.db-d{background:#e6f0ea;color:var(--green);}
+/* GATE BLOCK */
+.gate {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-left: 3px solid var(--accent2);
+  background: #fdf9f3;
+  border-radius: 0 2px 2px 0;
+}
+.gate-label {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.gate-text { font-size: 12px; color: var(--ink2); line-height: 1.6; }
 
-/* REVIEW GATES */
-.section-title{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent2);margin-bottom:14px;}
-.gate-item{display:grid;grid-template-columns:76px 1fr;gap:14px;padding:18px 0;border-bottom:1px solid var(--rule);}
-.gate-item:last-child{border-bottom:none;}
-.gate-day-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--accent);text-align:center;}
-.gate-day-lbl{font-size:9px;color:var(--ink3);text-align:center;text-transform:uppercase;letter-spacing:0.1em;}
-.gate-info-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:5px;}
-.gate-info-desc{font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:6px;}
-.gate-info-action{font-size:11px;color:var(--accent2);font-weight:500;}
+/* ─── DAILY LOG ──────────────────────────────────────────── */
+.day-table { width: 100%; border-collapse: collapse; }
+.day-table thead tr  { background: var(--accent); }
+.day-table thead td  {
+  color: #e8e5de; font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; font-weight: 500; padding: 10px 12px;
+}
+.day-table tbody td  {
+  padding: 10px 12px; font-size: 12px; color: var(--ink2);
+  border-bottom: 1px solid var(--rule); vertical-align: top;
+}
+.day-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px; font-weight: 700; color: var(--accent); text-align: center;
+}
+.today-row td { background: #fffbf5; }
+.day-badge {
+  font-size: 9px; padding: 3px 8px; letter-spacing: 0.08em;
+  text-transform: uppercase; display: inline-block; border-radius: 2px;
+}
+.db-a { background: #fff4e6; color: var(--amber); }
+.db-p { background: var(--tag); color: var(--ink3); }
+.db-d { background: #e6f0ea; color: var(--green); }
 
-/* COMM */
-.comm-rule{padding:13px 16px;border-left:2px solid var(--accent);background:var(--white);margin-bottom:8px;}
-.comm-rule-title{font-size:12px;font-weight:500;color:var(--accent);margin-bottom:3px;}
-.comm-rule-body{font-size:12px;color:var(--ink2);line-height:1.6;}
+/* ─── GATES PANEL ────────────────────────────────────────── */
+.section-title {
+  font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--accent2); margin-bottom: 16px; font-weight: 600;
+}
+.gate-item {
+  display: grid; grid-template-columns: 72px 1fr;
+  gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--rule);
+}
+.gate-item:last-child { border-bottom: none; }
+.gate-day-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px; font-weight: 700; color: var(--accent); text-align: center;
+}
+.gate-day-lbl {
+  font-size: 9px; color: var(--ink3); text-align: center;
+  text-transform: uppercase; letter-spacing: 0.1em;
+}
+.gate-info-name { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+.gate-info-desc { font-size: 12px; color: var(--ink3); line-height: 1.65; margin-bottom: 6px; }
+.gate-info-action { font-size: 11px; color: var(--accent2); font-weight: 500; }
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#e8e5de;padding:10px 18px;font-size:12px;z-index:999;opacity:0;transition:opacity 0.3s;pointer-events:none;}
-.toast.show{opacity:1;}
+/* ─── COMMS PANEL ────────────────────────────────────────── */
+.comm-rule {
+  padding: 16px 18px;
+  border-left: 2px solid var(--accent);
+  background: var(--white);
+  margin-bottom: 8px;
+  border-radius: 0 2px 2px 0;
+  border: 1px solid var(--rule);
+  border-left: 2px solid var(--accent);
+}
+.comm-rule-title { font-size: 12px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.comm-rule-body  { font-size: 12px; color: var(--ink2); line-height: 1.65; }
+
+/* ─── VIEW BANNER ────────────────────────────────────────── */
+.view-banner {
+  background: #f0f4f8;
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 32px;
+  font-size: 11px;
+  color: var(--ink3);
+  display: flex; align-items: center; gap: 8px;
+}
+.view-banner.hidden { display: none; }
+
+/* ─── RIGHT SIDEBAR ──────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  position: sticky;
+  top: 48px;
+  height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: var(--white);
+  border-left: 1px solid var(--rule);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-bottom: 40px;
+}
+
+.sidebar-section {
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--rule);
+}
+.sidebar-section:last-child { border-bottom: none; }
+
+.sidebar-label {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Day card */
+.day-card {}
+.day-card-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.day-card-label {
+  font-size: 11px;
+  color: var(--ink3);
+  margin-bottom: 10px;
+}
+.day-card-window {
+  font-size: 11px;
+  color: var(--ink2);
+  font-weight: 500;
+  padding: 8px 10px;
+  background: var(--bg);
+  border-radius: 2px;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+.day-card-remaining {
+  font-size: 12px;
+  color: var(--accent2);
+  font-weight: 600;
+}
+.day-card-remaining span {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--ink3);
+  margin-left: 4px;
+}
+
+/* Progress card */
+.progress-card {}
+.progress-bar {
+  height: 6px;
+  background: var(--rule);
+  border-radius: 3px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--accent2);
+  border-radius: 3px;
+  transition: width 0.4s;
+}
+.progress-numbers {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.progress-pct {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.progress-of {
+  font-size: 11px;
+  color: var(--ink3);
+}
+
+/* Stats grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.stat-box {
+  background: var(--bg);
+  padding: 12px 10px;
+  border-radius: 2px;
+  text-align: center;
+}
+.stat-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+}
+.stat-lbl {
+  font-size: 9px;
+  color: var(--ink3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* Next gate card */
+.next-gate-card {
+  background: #fdf9f3;
+  border-radius: 2px;
+  padding: 14px;
+  border-left: 3px solid var(--accent2);
+}
+.next-gate-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.next-gate-date {
+  font-size: 11px;
+  color: var(--accent2);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.next-gate-desc {
+  font-size: 11px;
+  color: var(--ink3);
+  line-height: 1.55;
+}
+
+/* Phase mini-list in sidebar */
+.phase-list {}
+.phase-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0ede6;
+}
+.phase-list-item:last-child { border-bottom: none; }
+.phase-list-badge {
+  width: 22px; height: 22px;
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.phase-list-info { flex: 1; min-width: 0; }
+.phase-list-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.phase-list-days { font-size: 10px; color: var(--ink3); }
+.phase-list-status {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 2px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* ─── MODAL ──────────────────────────────────────────────── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(10,10,8,0.65); z-index: 1000;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(2px);
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--white);
+  padding: 40px;
+  width: 320px;
+  border-radius: 2px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(15,14,12,0.2);
+  position: relative;
+}
+.modal-close {
+  position: absolute;
+  top: 12px; right: 14px;
+  font-size: 18px; line-height: 1;
+  color: var(--ink3);
+  cursor: pointer;
+  border: none; background: none;
+  padding: 4px 6px;
+  border-radius: 2px;
+  transition: color 0.15s, background 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.modal-close:hover { color: var(--ink); background: var(--tag); }
+.modal-title { font-family:'Playfair Display',serif; font-size:20px; color:var(--accent); margin-bottom:6px; }
+.modal-sub   { font-size:12px; color:var(--ink3); margin-bottom:24px; }
+.pin-input {
+  width: 100%; padding: 12px;
+  font-size: 18px; text-align: center;
+  border: 1.5px solid var(--rule);
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.3em; outline: none; margin-bottom: 12px;
+  border-radius: 2px;
+  transition: border-color 0.15s;
+}
+.pin-input:focus { border-color: var(--accent); }
+.pin-btn {
+  width: 100%; padding: 12px;
+  background: var(--accent); color: #e8e5de;
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-weight: 500;
+  border-radius: 2px;
+  transition: background 0.15s;
+}
+.pin-btn:hover { background: #1e4570; }
+.pin-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.pin-cancel {
+  display: block; margin-top: 12px;
+  font-size: 11px; color: var(--ink3);
+  cursor: pointer; background: none; border: none;
+  font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.06em;
+  transition: color 0.15s;
+}
+.pin-cancel:hover { color: var(--ink); }
+.pin-error { font-size: 11px; color: #9b3c2e; margin-top: 8px; display: none; }
+
+/* ─── TOAST ──────────────────────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--accent); color: #e8e5de;
+  padding: 10px 18px; font-size: 12px; z-index: 999;
+  opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  border-radius: 2px;
+  box-shadow: 0 4px 20px rgba(15,14,12,0.15);
+}
+.toast.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -165,345 +755,491 @@ html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--ink)
 <!-- PIN MODAL -->
 <div class="modal-overlay" id="pinModal">
   <div class="modal">
+    <button class="modal-close" onclick="closePin()" title="Cancel">&#x2715;</button>
     <div class="modal-title">Designer Access</div>
     <div class="modal-sub">Enter your PIN to enable edit mode</div>
-    <input type="password" class="pin-input" id="pinInput" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;" maxlength="20" onkeydown="if(event.key==='Enter')checkPin()">
-    <button class="pin-btn" onclick="checkPin()">Unlock</button>
+    <input type="password" class="pin-input" id="pinInput" placeholder="••••••" maxlength="20"
+      onkeydown="if(event.key==='Enter')checkPin(); if(event.key==='Escape')closePin()">
+    <button class="pin-btn" id="pinBtn" onclick="checkPin()">Unlock</button>
     <div class="pin-error" id="pinError">Incorrect PIN. Try again.</div>
+    <button class="pin-cancel" onclick="closePin()">Cancel — stay in view-only mode</button>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
-<div class="wrap">
-
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
-    <div class="topbar-title">HATFAM Sprint &mdash; Live Tracker</div>
+    <div class="topbar-wordmark">HATFAM</div>
+    <div class="topbar-divider"></div>
+    <div class="topbar-sub">Brand Sprint Tracker</div>
     <div class="sync-badge sync-connecting" id="syncBadge">
       <div class="dot"></div>
       <span id="syncText">Connecting</span>
     </div>
   </div>
-  <div class="edit-badge" id="editBadge" onclick="handleEditClick()">
-    <span class="lock-icon" id="lockIcon">&#128274;</span>
-    <span id="editBadgeText">View Only</span>
+  <div class="topbar-right">
+    <div class="edit-badge" id="editBadge" onclick="handleEditClick()">
+      <span id="lockIcon">&#128274;</span>
+      <span id="editBadgeText">View Only</span>
+    </div>
   </div>
 </div>
 
-<!-- HEADER -->
-<div class="hdr">
-  <div class="hdr-top">
-    <div>
-      <div class="hdr-title">HATFAM Business Group<br>Brand Sprint Tracker</div>
-      <div class="hdr-sub">14-Day Corporate Brand Architecture &mdash; Shalom Eshetu</div>
-    </div>
-    <div class="hdr-meta">
+<!-- PHASE STEPPER -->
+<div class="stepper">
+  <div class="stepper-item">
+    <div class="stepper-num active" id="stepA">A</div>
+    <div class="stepper-label active" id="stepLabelA">Master Brand<small>HATFAM Trading · Days 1–4</small></div>
+  </div>
+  <div class="stepper-arrow"></div>
+  <div class="stepper-item">
+    <div class="stepper-num pending" id="stepB">B</div>
+    <div class="stepper-label pending" id="stepLabelB">Sub-Brands<small>DBTRAN & Overflow · Days 5–8</small></div>
+  </div>
+  <div class="stepper-arrow"></div>
+  <div class="stepper-item">
+    <div class="stepper-num pending" id="stepC">C</div>
+    <div class="stepper-label pending" id="stepLabelC">Harmonization<small>Polished Events · Days 9–11</small></div>
+  </div>
+  <div class="stepper-arrow"></div>
+  <div class="stepper-item">
+    <div class="stepper-num pending" id="stepD">D</div>
+    <div class="stepper-label pending" id="stepLabelD">Handover<small>Command Manual · Days 12–14</small></div>
+  </div>
+</div>
+
+<div class="page-body">
+
+<!-- ─── MAIN CONTENT ─────────────────────────────────────── -->
+<div class="main">
+
+  <!-- PROJECT HEADER -->
+  <div class="proj-header">
+    <div class="proj-header-inner">
       <div>
-        <div class="hdr-stat-val" id="currentDayDisplay">Day &mdash;</div>
-        <div class="hdr-stat-lbl">Current Day</div>
+        <div class="proj-title">HATFAM Business Group<br>Brand Sprint</div>
+        <div class="proj-meta">
+          <span>Shalom Eshetu</span>
+          <span>14-Day Corporate Brand Architecture</span>
+          <span>4 Entities</span>
+        </div>
       </div>
+      <div class="proj-dates">
+        <div class="proj-date-item">
+          <div class="proj-date-val">May 23</div>
+          <div class="proj-date-lbl">Start</div>
+        </div>
+        <div class="proj-date-item">
+          <div class="proj-date-val">Jun 5</div>
+          <div class="proj-date-lbl">Handover</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIEW BANNER -->
+  <div class="view-banner" id="viewBanner">
+    &#128065; Read-only view — task progress is updated live by the designer.
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('phases')">Phase Breakdown</div>
+    <div class="tab" onclick="switchTab('daily')">Daily Log</div>
+    <div class="tab" onclick="switchTab('gates')">Review Gates</div>
+    <div class="tab" onclick="switchTab('comms')">Communication Rules</div>
+  </div>
+
+  <!-- ── PHASES PANEL ──────────────────────────────────────── -->
+  <div class="panel active" id="phases">
+
+    <!-- PHASE A -->
+    <div class="phase" id="phaseA">
+      <div class="phase-hdr" onclick="togglePhase('A')">
+        <div class="phase-badge" style="background:var(--accent)">A</div>
+        <div class="phase-info">
+          <div class="phase-name">Master Brand Architecture — HATFAM Trading PLC</div>
+          <div class="phase-days">Days 1–4 &nbsp;·&nbsp; May 23 7PM – May 27 7PM</div>
+        </div>
+        <div class="phase-right">
+          <div class="phase-pct" id="pctA">0%</div>
+          <div class="phase-status status-active" id="statusA">Active</div>
+          <div class="phase-toggle" id="toggleA">▾</div>
+        </div>
+      </div>
+      <div class="phase-body" id="bodyA">
+        <div class="phase-progress-bar"><div class="phase-progress-fill" id="fillA" style="width:0%"></div></div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">Strategy &amp; Direction</div>
+          <div class="deliv-item"><div class="check" id="t1" onclick="toggleTask('t1')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t1">Present Phase 01 Verbal Identity Document to Dawit for direction confirmation</div><div class="deliv-tag">Day 1</div></div></div>
+          <div class="deliv-item"><div class="check" id="t2" onclick="toggleTask('t2')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t2">Confirm visual direction — Sovereign or Current</div><div class="deliv-tag">Day 1</div></div></div>
+          <div class="deliv-item"><div class="check" id="t3" onclick="toggleTask('t3')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t3">Confirm tone direction — Trusted Partner or Connecting Force</div><div class="deliv-tag">Day 1</div></div></div>
+          <div class="deliv-item"><div class="check" id="t4" onclick="toggleTask('t4')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t4">Shortlist Amharic-compatible typeface systems (Latin + Ethiopic pairing)</div><div class="deliv-tag">Day 1–2</div></div></div>
+        </div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">Logo Engineering</div>
+          <div class="deliv-item"><div class="check" id="t5" onclick="toggleTask('t5')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t5">Develop 2 primary HATFAM master mark concepts on grid system</div><div class="deliv-tag">Day 2–3</div></div></div>
+          <div class="deliv-item"><div class="check" id="t6" onclick="toggleTask('t6')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t6">Establish master global color palette — primary + secondary</div><div class="deliv-tag">Day 2</div></div></div>
+          <div class="deliv-item"><div class="check" id="t7" onclick="toggleTask('t7')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t7">Engineer Group typography system — display + body + Amharic</div><div class="deliv-tag">Day 2–3</div></div></div>
+          <div class="deliv-item"><div class="check" id="t8" onclick="toggleTask('t8')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t8">Develop secondary brand pattern (Visual DNA / connecting markets motif)</div><div class="deliv-tag">Day 3</div></div></div>
+          <div class="deliv-item"><div class="check" id="t9" onclick="toggleTask('t9')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t9">Produce logo variations: primary, horizontal, stacked, icon-only</div><div class="deliv-tag">Day 3–4</div></div></div>
+          <div class="deliv-item"><div class="check" id="t10" onclick="toggleTask('t10')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t10">Build Phase A presentation deck with mockups for Phase A review session</div><div class="deliv-tag">Day 4</div></div></div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-label">&#128274; Phase A Review Gate — End of Day 4 (May 27, 7PM)</div>
+          <div class="gate-text">Present master brand concepts to Dawit. Client has 24 hours to compile and deliver consolidated feedback. Approval locks Phase A and activates Phase B. No changes to master mark after this point without scope-extension clause.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE B -->
+    <div class="phase" id="phaseB">
+      <div class="phase-hdr" onclick="togglePhase('B')">
+        <div class="phase-badge" style="background:var(--ink3)" id="badgeB">B</div>
+        <div class="phase-info">
+          <div class="phase-name">Sub-Brand Engineering — DBTRAN &amp; Overflow</div>
+          <div class="phase-days">Days 5–8 &nbsp;·&nbsp; May 27 7PM – May 31 7PM</div>
+        </div>
+        <div class="phase-right">
+          <div class="phase-pct" id="pctB">0%</div>
+          <div class="phase-status status-pending" id="statusB">Pending</div>
+          <div class="phase-toggle" id="toggleB">▾</div>
+        </div>
+      </div>
+      <div class="phase-body" id="bodyB">
+        <div class="phase-progress-bar"><div class="phase-progress-fill" id="fillB" style="width:0%"></div></div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">DBTRAN Group FZE — UAE</div>
+          <div class="deliv-item"><div class="check" id="t11" onclick="toggleTask('t11')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t11">Engineer DBTRAN distinct identity with visual node connection to HATFAM master mark</div><div class="deliv-tag">Day 5–6</div></div></div>
+          <div class="deliv-item"><div class="check" id="t12" onclick="toggleTask('t12')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t12">Apply Group color palette with DBTRAN-specific accent differentiation</div><div class="deliv-tag">Day 5–6</div></div></div>
+          <div class="deliv-item"><div class="check" id="t13" onclick="toggleTask('t13')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t13">Design "Powered by HATFAM" endorsement signature for DBTRAN</div><div class="deliv-tag">Day 6</div></div></div>
+          <div class="deliv-item"><div class="check" id="t14" onclick="toggleTask('t14')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t14">Produce DBTRAN logo variations: primary, horizontal, stacked, icon-only</div><div class="deliv-tag">Day 6</div></div></div>
+        </div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">Overflow Global Trading (U) Ltd — Uganda</div>
+          <div class="deliv-item"><div class="check" id="t15" onclick="toggleTask('t15')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t15">Engineer Overflow logistics-focused identity sharing master palette</div><div class="deliv-tag">Day 7</div></div></div>
+          <div class="deliv-item"><div class="check" id="t16" onclick="toggleTask('t16')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t16">Design "Market Access by HATFAM" endorsement + "HATFAM Partner" badge</div><div class="deliv-tag">Day 7</div></div></div>
+          <div class="deliv-item"><div class="check" id="t17" onclick="toggleTask('t17')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t17">Produce Overflow logo variations: primary, horizontal, stacked, icon-only</div><div class="deliv-tag">Day 7–8</div></div></div>
+          <div class="deliv-item"><div class="check" id="t18" onclick="toggleTask('t18')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t18">Build Phase B presentation deck with both sub-brand systems and mockups</div><div class="deliv-tag">Day 8</div></div></div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-label">&#128274; Phase B Review Gate — End of Day 8 (May 31, 7PM)</div>
+          <div class="gate-text">Present both sub-brand systems alongside master brand for Group coherence review. Client has 24 hours to compile consolidated feedback. Approval locks Phase B and activates Phase C.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE C -->
+    <div class="phase" id="phaseC">
+      <div class="phase-hdr" onclick="togglePhase('C')">
+        <div class="phase-badge" style="background:var(--ink3)" id="badgeC">C</div>
+        <div class="phase-info">
+          <div class="phase-name">Brand Harmonization &amp; Stationery — Polished Events</div>
+          <div class="phase-days">Days 9–11 &nbsp;·&nbsp; May 31 7PM – Jun 3 7PM</div>
+        </div>
+        <div class="phase-right">
+          <div class="phase-pct" id="pctC">0%</div>
+          <div class="phase-status status-pending" id="statusC">Pending</div>
+          <div class="phase-toggle" id="toggleC">▾</div>
+        </div>
+      </div>
+      <div class="phase-body" id="bodyC">
+        <div class="phase-progress-bar"><div class="phase-progress-fill" id="fillC" style="width:0%"></div></div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">Polished Events Harmonization</div>
+          <div class="deliv-item"><div class="check" id="t19" onclick="toggleTask('t19')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t19">Audit existing Polished Events logo — assess brand equity to retain</div><div class="deliv-tag">Day 9</div></div></div>
+          <div class="deliv-item"><div class="check" id="t20" onclick="toggleTask('t20')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t20">Apply minimal palette adjustments to align with HATFAM Group spectrum</div><div class="deliv-tag">Day 9</div></div></div>
+          <div class="deliv-item"><div class="check" id="t21" onclick="toggleTask('t21')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t21">Integrate "A HATFAM Business Group Company" signature across Polished touchpoints</div><div class="deliv-tag">Day 9–10</div></div></div>
+          <div class="deliv-item"><div class="check" id="t22" onclick="toggleTask('t22')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t22">Produce harmonized Polished Events logo set with Group endorsement</div><div class="deliv-tag">Day 10</div></div></div>
+        </div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">Stationery System</div>
+          <div class="deliv-item"><div class="check" id="t23" onclick="toggleTask('t23')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t23">Design Group letterhead — HATFAM master + sub-brand variants</div><div class="deliv-tag">Day 10</div></div></div>
+          <div class="deliv-item"><div class="check" id="t24" onclick="toggleTask('t24')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t24">Design business card — Dawit Hailu (CEO/Founder) · English + Amharic</div><div class="deliv-tag">Day 10–11</div></div></div>
+          <div class="deliv-item"><div class="check" id="t25" onclick="toggleTask('t25')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t25">Design basic signage mockup for HATFAM office (agreed scope addition)</div><div class="deliv-tag">Day 11</div></div></div>
+          <div class="deliv-item"><div class="check" id="t26" onclick="toggleTask('t26')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t26">Build Phase C presentation deck for Phase C review session</div><div class="deliv-tag">Day 11</div></div></div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-label">&#128274; Phase C Review Gate — End of Day 11 (Jun 3, 7PM)</div>
+          <div class="gate-text">Present full harmonized system + stationery. Client has 24 hours consolidated feedback window. All additional business card contacts must be submitted at this gate — not after.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE D -->
+    <div class="phase" id="phaseD">
+      <div class="phase-hdr" onclick="togglePhase('D')">
+        <div class="phase-badge" style="background:var(--ink3)" id="badgeD">D</div>
+        <div class="phase-info">
+          <div class="phase-name">Group Command Manual &amp; Secure Handover</div>
+          <div class="phase-days">Days 12–14 &nbsp;·&nbsp; Jun 3 7PM – Jun 6 7PM</div>
+        </div>
+        <div class="phase-right">
+          <div class="phase-pct" id="pctD">0%</div>
+          <div class="phase-status status-pending" id="statusD">Pending</div>
+          <div class="phase-toggle" id="toggleD">▾</div>
+        </div>
+      </div>
+      <div class="phase-body" id="bodyD">
+        <div class="phase-progress-bar"><div class="phase-progress-fill" id="fillD" style="width:0%"></div></div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">Corporate Identity Book</div>
+          <div class="deliv-item"><div class="check" id="t27" onclick="toggleTask('t27')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t27">Compile Group Command Manual — all four entities, all rules, all usage standards</div><div class="deliv-tag">Day 12</div></div></div>
+          <div class="deliv-item"><div class="check" id="t28" onclick="toggleTask('t28')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t28">Document color palette system with HEX, CMYK, Pantone, and RGB values</div><div class="deliv-tag">Day 12</div></div></div>
+          <div class="deliv-item"><div class="check" id="t29" onclick="toggleTask('t29')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t29">Document typography system — all weights, sizes, and hierarchy rules</div><div class="deliv-tag">Day 12</div></div></div>
+          <div class="deliv-item"><div class="check" id="t30" onclick="toggleTask('t30')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t30">Document all endorsement signatures, badge usage rules, and clear space standards</div><div class="deliv-tag">Day 12–13</div></div></div>
+          <div class="deliv-item"><div class="check" id="t31" onclick="toggleTask('t31')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t31">Document do/don't misuse examples for all four entity marks</div><div class="deliv-tag">Day 13</div></div></div>
+          <div class="deliv-item"><div class="check" id="t32" onclick="toggleTask('t32')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t32">Format and design the manual document to Group visual standard</div><div class="deliv-tag">Day 13</div></div></div>
+        </div>
+
+        <div class="deliv-section">
+          <div class="deliv-title">Final Structural Review &amp; Handover</div>
+          <div class="deliv-item"><div class="check" id="t33" onclick="toggleTask('t33')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t33">Conduct internal QA — all files across all four entities checked for consistency</div><div class="deliv-tag">Day 14</div></div></div>
+          <div class="deliv-item"><div class="check" id="t34" onclick="toggleTask('t34')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t34">Organize four separate production-ready file folders (AI, PDF, SVG, EPS, PNG, JPEG)</div><div class="deliv-tag">Day 14</div></div></div>
+          <div class="deliv-item"><div class="check" id="t35" onclick="toggleTask('t35')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t35">Send final 40% project invoice (110,400 ETB) to HATFAM for final settlement</div><div class="deliv-tag">Day 14</div></div></div>
+          <div class="deliv-item"><div class="check" id="t36" onclick="toggleTask('t36')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t36">Deliver Group Command Manual + all master production file directories to HATFAM</div><div class="deliv-tag">Day 14</div></div></div>
+          <div class="deliv-item"><div class="check" id="t37" onclick="toggleTask('t37')"></div><div class="deliv-content"><div class="deliv-text" id="txt_t37">Receive final written approval from HATFAM — closes the sprint and completes asset transfer</div><div class="deliv-tag">Day 14</div></div></div>
+        </div>
+
+        <div class="gate">
+          <div class="gate-label">&#128274; Final Handover Gate — End of Day 14 (Jun 6, 7PM)</div>
+          <div class="gate-text">Written approval received. Final 40% payment (110,400 ETB) cleared. Full IP and file ownership transferred to HATFAM Trading PLC. Sprint complete. Strategic Partnership Value Exchange obligations activated.</div>
+        </div>
+      </div>
+    </div>
+  </div><!-- /phases panel -->
+
+  <!-- ── DAILY LOG PANEL ───────────────────────────────────── -->
+  <div class="panel" id="daily">
+    <div class="section-title">Day-by-Day Sprint Log — 24-Hour Cycles from 7:00 PM EAT</div>
+    <table class="day-table">
+      <thead><tr>
+        <td style="width:50px">Day</td>
+        <td style="width:140px">Cycle Window</td>
+        <td>Primary Focus</td>
+        <td style="width:90px">Phase</td>
+      </tr></thead>
+      <tbody>
+        <tr id="logrow1"><td class="day-num">1</td><td>May 23 7PM → May 24 7PM</td><td>Verbal identity presentation to Dawit. Direction confirmation (Sovereign/Current + Tone). Typeface shortlisting begins.</td><td><span class="day-badge db-a">A</span></td></tr>
+        <tr id="logrow2"><td class="day-num">2</td><td>May 24 7PM → May 25 7PM</td><td>Master palette engineering. Typography system development. Grid system setup. First mark sketches.</td><td><span class="day-badge db-a">A</span></td></tr>
+        <tr id="logrow3"><td class="day-num">3</td><td>May 25 7PM → May 26 7PM</td><td>HATFAM master mark development — 2 refined concepts. Pattern system (Visual DNA). Logo variations.</td><td><span class="day-badge db-a">A</span></td></tr>
+        <tr id="logrow4"><td class="day-num">4</td><td>May 26 7PM → May 27 7PM</td><td>Phase A mockup production. Phase A presentation deck. Client review presentation — EOD.</td><td><span class="day-badge db-a">A — Gate</span></td></tr>
+        <tr id="logrow5"><td class="day-num">5</td><td>May 27 7PM → May 28 7PM</td><td>Phase A feedback integration. DBTRAN identity engineering begins. Visual node system.</td><td><span class="day-badge db-p">B</span></td></tr>
+        <tr id="logrow6"><td class="day-num">6</td><td>May 28 7PM → May 29 7PM</td><td>DBTRAN mark refinement. "Powered by HATFAM" endorsement. DBTRAN logo variations complete.</td><td><span class="day-badge db-p">B</span></td></tr>
+        <tr id="logrow7"><td class="day-num">7</td><td>May 29 7PM → May 30 7PM</td><td>Overflow identity engineering. "Market Access by HATFAM" + Partner badge. Overflow logo variations.</td><td><span class="day-badge db-p">B</span></td></tr>
+        <tr id="logrow8"><td class="day-num">8</td><td>May 30 7PM → May 31 7PM</td><td>Phase B mockups. Phase B presentation deck. Client review presentation — EOD.</td><td><span class="day-badge db-p">B — Gate</span></td></tr>
+        <tr id="logrow9"><td class="day-num">9</td><td>May 31 7PM → Jun 1 7PM</td><td>Polished Events logo audit. Palette harmonization. Group endorsement integration begins.</td><td><span class="day-badge db-p">C</span></td></tr>
+        <tr id="logrow10"><td class="day-num">10</td><td>Jun 1 7PM → Jun 2 7PM</td><td>Polished harmonized mark finalized. Letterhead design. Business card (Dawit Hailu) EN + AM.</td><td><span class="day-badge db-p">C</span></td></tr>
+        <tr id="logrow11"><td class="day-num">11</td><td>Jun 2 7PM → Jun 3 7PM</td><td>Signage mockup. Phase C presentation deck. Client review presentation — EOD.</td><td><span class="day-badge db-p">C — Gate</span></td></tr>
+        <tr id="logrow12"><td class="day-num">12</td><td>Jun 3 7PM → Jun 4 7PM</td><td>Command Manual compilation begins. Color, type, pattern, and endorsement documentation.</td><td><span class="day-badge db-p">D</span></td></tr>
+        <tr id="logrow13"><td class="day-num">13</td><td>Jun 4 7PM → Jun 5 7PM</td><td>Manual design + formatting. Do/don't pages. All four entity sections complete.</td><td><span class="day-badge db-p">D</span></td></tr>
+        <tr id="logrow14"><td class="day-num">14</td><td>Jun 5 7PM → Jun 6 7PM</td><td>Internal QA. File organization (4 folders). Final invoice issued. Handover + written approval.</td><td><span class="day-badge db-p">D — Handover</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── REVIEW GATES PANEL ────────────────────────────────── -->
+  <div class="panel" id="gates">
+    <div class="section-title">Four Review Gates — Client Approval Protocol</div>
+    <div class="gate-item">
+      <div><div class="gate-day-num">4</div><div class="gate-day-lbl">May 27</div></div>
       <div>
-        <div class="hdr-stat-val">May 23</div>
-        <div class="hdr-stat-lbl">Sprint Start</div>
+        <div class="gate-info-name">Phase A Gate — HATFAM Master Brand</div>
+        <div class="gate-info-desc">Present master mark concepts, color palette, and typography system. Two concept directions shown. Client selects and provides consolidated feedback within 24 hours. Approval locks the master brand. No reversions after this gate.</div>
+        <div class="gate-info-action">Output: Approved master mark → activates Phase B</div>
       </div>
+    </div>
+    <div class="gate-item">
+      <div><div class="gate-day-num">8</div><div class="gate-day-lbl">May 31</div></div>
       <div>
-        <div class="hdr-stat-val">Jun 5</div>
-        <div class="hdr-stat-lbl">Handover Date</div>
+        <div class="gate-info-name">Phase B Gate — DBTRAN &amp; Overflow Systems</div>
+        <div class="gate-info-desc">Present both sub-brand identity systems alongside the approved master brand. Client reviews Group coherence. Consolidated feedback within 24 hours. Approval locks both sub-brands.</div>
+        <div class="gate-info-action">Output: Approved sub-brand system → activates Phase C</div>
       </div>
     </div>
-  </div>
-  <div class="day-counter">
-    <div>
-      <div class="day-current" id="dayWindowDisplay">Calculating sprint day&hellip;</div>
-      <div class="day-cycle" id="dayCycleDisplay"></div>
+    <div class="gate-item">
+      <div><div class="gate-day-num">11</div><div class="gate-day-lbl">Jun 3</div></div>
+      <div>
+        <div class="gate-info-name">Phase C Gate — Harmonization &amp; Stationery</div>
+        <div class="gate-info-desc">Present Polished Events harmonized identity, letterhead, business cards, and signage mockup. Client reviews full four-entity ecosystem together for the first time. Any stationery copy changes must be submitted at this gate. Consolidated feedback within 24 hours.</div>
+        <div class="gate-info-action">Output: Approved full ecosystem → activates Phase D</div>
+      </div>
     </div>
-    <div class="day-remaining" id="dayRemainingDisplay"></div>
-  </div>
-</div>
-
-<!-- PROGRESS -->
-<div class="progress-wrap">
-  <div class="progress-label">
-    <span>Sprint Progress</span>
-    <span id="progressPct">Loading&hellip;</span>
-  </div>
-  <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-</div>
-
-<!-- VIEW BANNER -->
-<div class="view-banner" id="viewBanner">
-  &#128065; You are viewing this tracker in read-only mode. Task progress is updated live by the designer.
-</div>
-
-<!-- TABS -->
-<div class="tabs">
-  <div class="tab active" onclick="switchTab('phases')">Phase Breakdown</div>
-  <div class="tab" onclick="switchTab('daily')">Daily Log</div>
-  <div class="tab" onclick="switchTab('gates')">Review Gates</div>
-  <div class="tab" onclick="switchTab('comms')">Communication Rules</div>
-</div>
-
-<!-- PHASES -->
-<div class="panel active" id="phases">
-  <div class="stats-grid">
-    <div class="stat-box"><div class="stat-val">4</div><div class="stat-lbl">Phases</div></div>
-    <div class="stat-box"><div class="stat-val">14</div><div class="stat-lbl">Sprint Days</div></div>
-    <div class="stat-box"><div class="stat-val">4</div><div class="stat-lbl">Review Gates</div></div>
-    <div class="stat-box"><div class="stat-val" id="checkedCount">0</div><div class="stat-lbl">Tasks Done</div></div>
-  </div>
-
-  <!-- PHASE A -->
-  <div class="phase" id="phaseA">
-    <div class="phase-hdr" onclick="togglePhase('A')">
-      <div class="phase-badge" style="background:var(--accent);">A</div>
-      <div class="phase-info">
-        <div class="phase-name">Master Brand Architecture &mdash; HATFAM Trading PLC</div>
-        <div class="phase-days">Days 1&ndash;4 &nbsp;&middot;&nbsp; May 23 7PM &ndash; May 27 7PM</div>
-      </div>
-      <div class="phase-status status-active" id="statusA">Active</div>
-      <div class="phase-toggle" id="toggleA">&#9660;</div>
-    </div>
-    <div class="phase-body" id="bodyA">
-      <div class="deliv-section">
-        <div class="deliv-title">Strategy &amp; Direction</div>
-        <div class="deliv-item"><div class="check" id="t1" onclick="toggleTask('t1')"></div><div><div class="deliv-text" id="txt_t1">Present Phase 01 Verbal Identity Document to Dawit for direction confirmation</div><div class="deliv-tag">Day 1</div></div></div>
-        <div class="deliv-item"><div class="check" id="t2" onclick="toggleTask('t2')"></div><div><div class="deliv-text" id="txt_t2">Confirm visual direction &mdash; Sovereign or Current</div><div class="deliv-tag">Day 2</div></div></div>
-        <div class="deliv-item"><div class="check" id="t3" onclick="toggleTask('t3')"></div><div><div class="deliv-text" id="txt_t3">Confirm tone direction &mdash; Trusted Partner or Connecting Force</div><div class="deliv-tag">Day 2</div></div></div>
-        <div class="deliv-item"><div class="check" id="t4" onclick="toggleTask('t4')"></div><div><div class="deliv-text" id="txt_t4">Shortlist Amharic-compatible typeface systems (Latin + Ethiopic pairing)</div><div class="deliv-tag">Day 1&ndash;2</div></div></div>
-      </div>
-      <div class="deliv-section">
-        <div class="deliv-title">Logo Engineering</div>
-        <div class="deliv-item"><div class="check" id="t5" onclick="toggleTask('t5')"></div><div><div class="deliv-text" id="txt_t5">Develop 2 primary HATFAM master mark concepts on grid system</div><div class="deliv-tag">Day 2&ndash;3</div></div></div>
-        <div class="deliv-item"><div class="check" id="t6" onclick="toggleTask('t6')"></div><div><div class="deliv-text" id="txt_t6">Establish master global color palette &mdash; primary + secondary</div><div class="deliv-tag">Day 2</div></div></div>
-        <div class="deliv-item"><div class="check" id="t7" onclick="toggleTask('t7')"></div><div><div class="deliv-text" id="txt_t7">Engineer Group typography system &mdash; display + body + Amharic</div><div class="deliv-tag">Day 2&ndash;3</div></div></div>
-        <div class="deliv-item"><div class="check" id="t8" onclick="toggleTask('t8')"></div><div><div class="deliv-text" id="txt_t8">Develop secondary brand pattern (Visual DNA / connecting markets motif)</div><div class="deliv-tag">Day 3</div></div></div>
-        <div class="deliv-item"><div class="check" id="t9" onclick="toggleTask('t9')"></div><div><div class="deliv-text" id="txt_t9">Produce logo variations: primary, horizontal, stacked, icon-only</div><div class="deliv-tag">Day 3&ndash;4</div></div></div>
-        <div class="deliv-item"><div class="check" id="t10" onclick="toggleTask('t10')"></div><div><div class="deliv-text" id="txt_t10">Build Phase A presentation deck with mockups for Phase A review session</div><div class="deliv-tag">Day 4</div></div></div>
-      </div>
-      <div class="gate">
-        <div class="gate-label">&#128274; Phase A Review Gate &mdash; End of Day 4 (May 27, 7PM)</div>
-        <div class="gate-text">Present master brand concepts to Dawit. Client has 24 hours to compile and deliver consolidated feedback. Approval locks Phase A and activates Phase B. No changes to master mark after this point without scope-extension clause.</div>
+    <div class="gate-item">
+      <div><div class="gate-day-num">14</div><div class="gate-day-lbl">Jun 6</div></div>
+      <div>
+        <div class="gate-info-name">Final Handover Gate — Command Manual &amp; Asset Transfer</div>
+        <div class="gate-info-desc">Present completed Group Command Manual. Written approval from Dawit Hailu triggers: (1) final 40% VAT invoice issued — 110,400 ETB, (2) full IP and file ownership transferred, (3) Strategic Partnership Value Exchange obligations activated.</div>
+        <div class="gate-info-action">Output: Written approval + payment → full ownership transfer to HATFAM</div>
       </div>
     </div>
   </div>
 
-  <!-- PHASE B -->
-  <div class="phase" id="phaseB">
-    <div class="phase-hdr" onclick="togglePhase('B')">
-      <div class="phase-badge" style="background:var(--ink3);" id="badgeB">B</div>
-      <div class="phase-info">
-        <div class="phase-name">Sub-Brand Engineering &mdash; DBTRAN &amp; Overflow</div>
-        <div class="phase-days">Days 5&ndash;8 &nbsp;&middot;&nbsp; May 27 7PM &ndash; May 31 7PM</div>
-      </div>
-      <div class="phase-status status-pending" id="statusB">Pending</div>
-      <div class="phase-toggle" id="toggleB">&#9660;</div>
+  <!-- ── COMMS PANEL ───────────────────────────────────────── -->
+  <div class="panel" id="comms">
+    <div class="section-title">Sprint Communication Standards</div>
+    <div class="comm-rule">
+      <div class="comm-rule-title">One Consolidated Round Per Phase</div>
+      <div class="comm-rule-body">Each phase has exactly one feedback round. All comments, changes, and questions must be compiled into a single message — not delivered piecemeal. Scattered feedback will be consolidated before actioning.</div>
     </div>
-    <div class="phase-body" id="bodyB">
-      <div class="deliv-section">
-        <div class="deliv-title">DBTRAN Group FZE &mdash; UAE</div>
-        <div class="deliv-item"><div class="check" id="t11" onclick="toggleTask('t11')"></div><div><div class="deliv-text" id="txt_t11">Engineer DBTRAN distinct identity with visual node connection to HATFAM master mark</div><div class="deliv-tag">Day 5&ndash;6</div></div></div>
-        <div class="deliv-item"><div class="check" id="t12" onclick="toggleTask('t12')"></div><div><div class="deliv-text" id="txt_t12">Apply Group color palette with DBTRAN-specific accent differentiation</div><div class="deliv-tag">Day 5&ndash;6</div></div></div>
-        <div class="deliv-item"><div class="check" id="t13" onclick="toggleTask('t13')"></div><div><div class="deliv-text" id="txt_t13">Design &ldquo;Powered by HATFAM&rdquo; endorsement signature for DBTRAN</div><div class="deliv-tag">Day 6</div></div></div>
-        <div class="deliv-item"><div class="check" id="t14" onclick="toggleTask('t14')"></div><div><div class="deliv-text" id="txt_t14">Produce DBTRAN logo variations: primary, horizontal, stacked, icon-only</div><div class="deliv-tag">Day 6</div></div></div>
-      </div>
-      <div class="deliv-section">
-        <div class="deliv-title">Overflow Global Trading (U) Ltd &mdash; Uganda</div>
-        <div class="deliv-item"><div class="check" id="t15" onclick="toggleTask('t15')"></div><div><div class="deliv-text" id="txt_t15">Engineer Overflow logistics-focused identity sharing master palette</div><div class="deliv-tag">Day 7</div></div></div>
-        <div class="deliv-item"><div class="check" id="t16" onclick="toggleTask('t16')"></div><div><div class="deliv-text" id="txt_t16">Design &ldquo;Market Access by HATFAM&rdquo; endorsement + &ldquo;HATFAM Partner&rdquo; badge</div><div class="deliv-tag">Day 7</div></div></div>
-        <div class="deliv-item"><div class="check" id="t17" onclick="toggleTask('t17')"></div><div><div class="deliv-text" id="txt_t17">Produce Overflow logo variations: primary, horizontal, stacked, icon-only</div><div class="deliv-tag">Day 7&ndash;8</div></div></div>
-        <div class="deliv-item"><div class="check" id="t18" onclick="toggleTask('t18')"></div><div><div class="deliv-text" id="txt_t18">Build Phase B presentation deck with both sub-brand systems and mockups for Phase B review session</div><div class="deliv-tag">Day 8</div></div></div>
-      </div>
-      <div class="gate">
-        <div class="gate-label">&#128274; Phase B Review Gate &mdash; End of Day 8 (May 31, 7PM)</div>
-        <div class="gate-text">Present both sub-brand systems alongside master brand for Group coherence review. Client has 24 hours to compile consolidated feedback. Approval locks Phase B and activates Phase C.</div>
+    <div class="comm-rule">
+      <div class="comm-rule-title">24-Hour Feedback Window</div>
+      <div class="comm-rule-body">From the moment a phase presentation is delivered, the client has 24 hours to return consolidated feedback. Silence after 24 hours is treated as approval and the sprint advances. This is a contractual term — reference Section 6 of the signed agreement.</div>
+    </div>
+    <div class="comm-rule">
+      <div class="comm-rule-title">Locked Phases Are Final</div>
+      <div class="comm-rule-body">Once a phase is approved, it is architecturally locked. Requesting changes to a locked phase triggers the scope-extension clause and invalidates the 14-day deadline. This protects both parties.</div>
+    </div>
+    <div class="comm-rule">
+      <div class="comm-rule-title">Direct Line for Operational Changes</div>
+      <div class="comm-rule-body">Additional raw assets or urgent operational changes — contact directly via WhatsApp/Telegram: +251 92 549 3131. Do not send raw assets via email during the sprint.</div>
+    </div>
+    <div class="comm-rule">
+      <div class="comm-rule-title">Presentation Format</div>
+      <div class="comm-rule-body">Each phase is presented as a structured Figma deck or PDF. Feedback must reference specific slides or elements — general impressions without specifics cannot be actioned within the sprint timeline.</div>
+    </div>
+    <div class="comm-rule">
+      <div class="comm-rule-title">Additional Business Card Contacts</div>
+      <div class="comm-rule-body">All additional executive names, titles, phone numbers, and emails must be submitted by Day 9 (May 31, 7PM) at the latest. Late submissions cannot be guaranteed within the 14-day window.</div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ─── RIGHT SIDEBAR ──────────────────────────────────────── -->
+<div class="sidebar">
+
+  <!-- Day Card -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Current Sprint Day</div>
+    <div class="day-card">
+      <div class="day-card-num" id="sidebarDayNum">—</div>
+      <div class="day-card-label" id="sidebarDayLabel">of 14 sprint days</div>
+      <div class="day-card-window" id="sidebarDayWindow">Calculating…</div>
+      <div class="day-card-remaining" id="sidebarRemaining">—<span>remaining in this day</span></div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Overall Progress</div>
+    <div class="progress-card">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-numbers">
+        <div class="progress-pct" id="progressPct">0%</div>
+        <div class="progress-of" id="progressOf">0 / 37 tasks</div>
       </div>
     </div>
   </div>
 
-  <!-- PHASE C -->
-  <div class="phase" id="phaseC">
-    <div class="phase-hdr" onclick="togglePhase('C')">
-      <div class="phase-badge" style="background:var(--ink3);" id="badgeC">C</div>
-      <div class="phase-info">
-        <div class="phase-name">Brand Harmonization &amp; Stationery &mdash; Polished Events</div>
-        <div class="phase-days">Days 9&ndash;11 &nbsp;&middot;&nbsp; May 31 7PM &ndash; Jun 3 7PM</div>
-      </div>
-      <div class="phase-status status-pending" id="statusC">Pending</div>
-      <div class="phase-toggle" id="toggleC">&#9660;</div>
+  <!-- Stats -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Sprint Overview</div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-val">4</div><div class="stat-lbl">Phases</div></div>
+      <div class="stat-box"><div class="stat-val">14</div><div class="stat-lbl">Days</div></div>
+      <div class="stat-box"><div class="stat-val">4</div><div class="stat-lbl">Gates</div></div>
+      <div class="stat-box"><div class="stat-val" id="checkedCount">0</div><div class="stat-lbl">Done</div></div>
     </div>
-    <div class="phase-body" id="bodyC">
-      <div class="deliv-section">
-        <div class="deliv-title">Polished Events Harmonization</div>
-        <div class="deliv-item"><div class="check" id="t19" onclick="toggleTask('t19')"></div><div><div class="deliv-text" id="txt_t19">Audit existing Polished Events logo &mdash; assess brand equity to retain</div><div class="deliv-tag">Day 9</div></div></div>
-        <div class="deliv-item"><div class="check" id="t20" onclick="toggleTask('t20')"></div><div><div class="deliv-text" id="txt_t20">Apply minimal palette adjustments to align with HATFAM Group spectrum</div><div class="deliv-tag">Day 9</div></div></div>
-        <div class="deliv-item"><div class="check" id="t21" onclick="toggleTask('t21')"></div><div><div class="deliv-text" id="txt_t21">Integrate &ldquo;A HATFAM Business Group Company&rdquo; signature across Polished touchpoints</div><div class="deliv-tag">Day 9&ndash;10</div></div></div>
-        <div class="deliv-item"><div class="check" id="t22" onclick="toggleTask('t22')"></div><div><div class="deliv-text" id="txt_t22">Produce harmonized Polished Events logo set with Group endorsement</div><div class="deliv-tag">Day 10</div></div></div>
+  </div>
+
+  <!-- Next Gate -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Next Review Gate</div>
+    <div class="next-gate-card" id="nextGateCard">
+      <div class="next-gate-title" id="nextGateTitle">Phase A Gate</div>
+      <div class="next-gate-date" id="nextGateDate">May 27 — End of Day 4</div>
+      <div class="next-gate-desc" id="nextGateDesc">Present master brand concepts. Client has 24h to return consolidated feedback.</div>
+    </div>
+  </div>
+
+  <!-- Phase List -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Phase Status</div>
+    <div class="phase-list">
+      <div class="phase-list-item">
+        <div class="phase-list-badge" style="background:var(--accent)">A</div>
+        <div class="phase-list-info">
+          <div class="phase-list-name">Master Brand</div>
+          <div class="phase-list-days">Days 1–4 · May 23–27</div>
+        </div>
+        <div class="phase-list-status status-active" id="sideStatusA">Active</div>
       </div>
-      <div class="deliv-section">
-        <div class="deliv-title">Stationery System</div>
-        <div class="deliv-item"><div class="check" id="t23" onclick="toggleTask('t23')"></div><div><div class="deliv-text" id="txt_t23">Design Group letterhead &mdash; HATFAM master + sub-brand variants</div><div class="deliv-tag">Day 10</div></div></div>
-        <div class="deliv-item"><div class="check" id="t24" onclick="toggleTask('t24')"></div><div><div class="deliv-text" id="txt_t24">Design business card &mdash; Dawit Hailu (CEO/Founder) &middot; English + Amharic</div><div class="deliv-tag">Day 10&ndash;11</div></div></div>
-        <div class="deliv-item"><div class="check" id="t25" onclick="toggleTask('t25')"></div><div><div class="deliv-text" id="txt_t25">Design basic signage mockup for HATFAM office (agreed scope addition)</div><div class="deliv-tag">Day 11</div></div></div>
-        <div class="deliv-item"><div class="check" id="t26" onclick="toggleTask('t26')"></div><div><div class="deliv-text" id="txt_t26">Build Phase C presentation deck for Phase C review session</div><div class="deliv-tag">Day 11</div></div></div>
+      <div class="phase-list-item">
+        <div class="phase-list-badge" style="background:var(--ink3)" id="sideBadgeB">B</div>
+        <div class="phase-list-info">
+          <div class="phase-list-name">Sub-Brands</div>
+          <div class="phase-list-days">Days 5–8 · May 27–31</div>
+        </div>
+        <div class="phase-list-status status-pending" id="sideStatusB">Pending</div>
       </div>
-      <div class="gate">
-        <div class="gate-label">&#128274; Phase C Review Gate &mdash; End of Day 11 (Jun 3, 7PM)</div>
-        <div class="gate-text">Present full harmonized system + stationery. Client has 24 hours consolidated feedback window. All additional business card contacts must be submitted at this gate &mdash; not after.</div>
+      <div class="phase-list-item">
+        <div class="phase-list-badge" style="background:var(--ink3)" id="sideBadgeC">C</div>
+        <div class="phase-list-info">
+          <div class="phase-list-name">Harmonization</div>
+          <div class="phase-list-days">Days 9–11 · May 31–Jun 3</div>
+        </div>
+        <div class="phase-list-status status-pending" id="sideStatusC">Pending</div>
+      </div>
+      <div class="phase-list-item">
+        <div class="phase-list-badge" style="background:var(--ink3)" id="sideBadgeD">D</div>
+        <div class="phase-list-info">
+          <div class="phase-list-name">Handover</div>
+          <div class="phase-list-days">Days 12–14 · Jun 3–6</div>
+        </div>
+        <div class="phase-list-status status-pending" id="sideStatusD">Pending</div>
       </div>
     </div>
   </div>
 
-  <!-- PHASE D -->
-  <div class="phase" id="phaseD">
-    <div class="phase-hdr" onclick="togglePhase('D')">
-      <div class="phase-badge" style="background:var(--ink3);" id="badgeD">D</div>
-      <div class="phase-info">
-        <div class="phase-name">Group Command Manual &amp; Secure Handover</div>
-        <div class="phase-days">Days 12&ndash;14 &nbsp;&middot;&nbsp; Jun 3 7PM &ndash; Jun 6 7PM</div>
-      </div>
-      <div class="phase-status status-pending" id="statusD">Pending</div>
-      <div class="phase-toggle" id="toggleD">&#9660;</div>
-    </div>
-    <div class="phase-body" id="bodyD">
-      <div class="deliv-section">
-        <div class="deliv-title">Corporate Identity Book</div>
-        <div class="deliv-item"><div class="check" id="t27" onclick="toggleTask('t27')"></div><div><div class="deliv-text" id="txt_t27">Compile Group Command Manual &mdash; all four entities, all rules, all usage standards</div><div class="deliv-tag">Day 12</div></div></div>
-        <div class="deliv-item"><div class="check" id="t28" onclick="toggleTask('t28')"></div><div><div class="deliv-text" id="txt_t28">Document color palette system with HEX, CMYK, Pantone, and RGB values</div><div class="deliv-tag">Day 12</div></div></div>
-        <div class="deliv-item"><div class="check" id="t29" onclick="toggleTask('t29')"></div><div><div class="deliv-text" id="txt_t29">Document typography system &mdash; all weights, sizes, and hierarchy rules</div><div class="deliv-tag">Day 12</div></div></div>
-        <div class="deliv-item"><div class="check" id="t30" onclick="toggleTask('t30')"></div><div><div class="deliv-text" id="txt_t30">Document all endorsement signatures, badge usage rules, and clear space standards</div><div class="deliv-tag">Day 12&ndash;13</div></div></div>
-        <div class="deliv-item"><div class="check" id="t31" onclick="toggleTask('t31')"></div><div><div class="deliv-text" id="txt_t31">Document do/don&rsquo;t misuse examples for all four entity marks</div><div class="deliv-tag">Day 13</div></div></div>
-        <div class="deliv-item"><div class="check" id="t32" onclick="toggleTask('t32')"></div><div><div class="deliv-text" id="txt_t32">Format and design the manual document to Group visual standard</div><div class="deliv-tag">Day 13</div></div></div>
-      </div>
-      <div class="deliv-section">
-        <div class="deliv-title">Final Structural Review &amp; Handover</div>
-        <div class="deliv-item"><div class="check" id="t33" onclick="toggleTask('t33')"></div><div><div class="deliv-text" id="txt_t33">Conduct internal QA &mdash; all files across all four entities checked for consistency</div><div class="deliv-tag">Day 14</div></div></div>
-        <div class="deliv-item"><div class="check" id="t34" onclick="toggleTask('t34')"></div><div><div class="deliv-text" id="txt_t34">Organize four separate production-ready file folders (AI, PDF, SVG, EPS, PNG, JPEG)</div><div class="deliv-tag">Day 14</div></div></div>
-        <div class="deliv-item"><div class="check" id="t35" onclick="toggleTask('t35')"></div><div><div class="deliv-text" id="txt_t35">Send final 40% project invoice (110,400 ETB) to HATFAM for final settlement</div><div class="deliv-tag">Day 14</div></div></div>
-        <div class="deliv-item"><div class="check" id="t36" onclick="toggleTask('t36')"></div><div><div class="deliv-text" id="txt_t36">Deliver Group Command Manual + all master production file directories to HATFAM</div><div class="deliv-tag">Day 14</div></div></div>
-        <div class="deliv-item"><div class="check" id="t37" onclick="toggleTask('t37')"></div><div><div class="deliv-text" id="txt_t37">Receive final written approval from HATFAM &mdash; closes the sprint and completes asset transfer</div><div class="deliv-tag">Day 14</div></div></div>
-      </div>
-      <div class="gate">
-        <div class="gate-label">&#128274; Final Handover Gate &mdash; End of Day 14 (Jun 6, 7PM)</div>
-        <div class="gate-text">Written approval received. Final 40% payment (110,400 ETB) cleared. Full IP and file ownership transferred to HATFAM Trading PLC. Sprint complete. Strategic Partnership Value Exchange obligations activated.</div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- DAILY LOG -->
-<div class="panel" id="daily">
-  <div class="section-title">Day-by-Day Sprint Log &mdash; 24-Hour Cycles from 7:00 PM EAT</div>
-  <table class="day-table">
-    <thead><tr><td style="width:50px;">Day</td><td style="width:130px;">Cycle Window</td><td>Primary Focus</td><td style="width:100px;">Phase</td></tr></thead>
-    <tbody>
-      <tr id="logrow1"><td class="day-num">1</td><td>May 23 7PM&rarr;May 24 7PM</td><td>Phase 01 Verbal Identity document completed and delivered to client. 24-hour feedback window activated.</td><td><span class="day-badge db-a">A</span></td></tr>
-      <tr id="logrow2"><td class="day-num">2</td><td>May 24 7PM&rarr;May 25 7PM</td><td>Receive Dawit&rsquo;s consolidated feedback. Confirm visual direction (Sovereign/Current) and tone direction. Amharic-compatible typeface shortlisting. Master palette engineering begins.</td><td><span class="day-badge db-a">A</span></td></tr>
-      <tr id="logrow3"><td class="day-num">3</td><td>May 25 7PM&rarr;May 26 7PM</td><td>HATFAM master mark development &mdash; 2 refined concepts. Pattern system (Visual DNA). Logo variations.</td><td><span class="day-badge db-a">A</span></td></tr>
-      <tr id="logrow4"><td class="day-num">4</td><td>May 26 7PM&rarr;May 27 7PM</td><td>Phase A mockup production. Phase A presentation deck. Client review presentation &mdash; EOD.</td><td><span class="day-badge db-a">A &mdash; Gate</span></td></tr>
-      <tr id="logrow5"><td class="day-num">5</td><td>May 27 7PM&rarr;May 28 7PM</td><td>Phase A feedback integration. DBTRAN identity engineering begins. Visual node system.</td><td><span class="day-badge db-p">B</span></td></tr>
-      <tr id="logrow6"><td class="day-num">6</td><td>May 28 7PM&rarr;May 29 7PM</td><td>DBTRAN mark refinement. &ldquo;Powered by HATFAM&rdquo; endorsement. DBTRAN logo variations complete.</td><td><span class="day-badge db-p">B</span></td></tr>
-      <tr id="logrow7"><td class="day-num">7</td><td>May 29 7PM&rarr;May 30 7PM</td><td>Overflow identity engineering. &ldquo;Market Access by HATFAM&rdquo; + Partner badge. Overflow logo variations.</td><td><span class="day-badge db-p">B</span></td></tr>
-      <tr id="logrow8"><td class="day-num">8</td><td>May 30 7PM&rarr;May 31 7PM</td><td>Phase B mockups. Phase B presentation deck. Client review presentation &mdash; EOD.</td><td><span class="day-badge db-p">B &mdash; Gate</span></td></tr>
-      <tr id="logrow9"><td class="day-num">9</td><td>May 31 7PM&rarr;Jun 1 7PM</td><td>Polished Events logo audit. Palette harmonization. Group endorsement integration begins.</td><td><span class="day-badge db-p">C</span></td></tr>
-      <tr id="logrow10"><td class="day-num">10</td><td>Jun 1 7PM&rarr;Jun 2 7PM</td><td>Polished harmonized mark finalized. Letterhead design. Business card (Dawit Hailu) EN + AM.</td><td><span class="day-badge db-p">C</span></td></tr>
-      <tr id="logrow11"><td class="day-num">11</td><td>Jun 2 7PM&rarr;Jun 3 7PM</td><td>Signage mockup. Phase C presentation deck. Client review presentation &mdash; EOD.</td><td><span class="day-badge db-p">C &mdash; Gate</span></td></tr>
-      <tr id="logrow12"><td class="day-num">12</td><td>Jun 3 7PM&rarr;Jun 4 7PM</td><td>Command Manual compilation begins. Color, type, pattern, and endorsement documentation.</td><td><span class="day-badge db-p">D</span></td></tr>
-      <tr id="logrow13"><td class="day-num">13</td><td>Jun 4 7PM&rarr;Jun 5 7PM</td><td>Manual design + formatting. Do/don&rsquo;t pages. All four entity sections complete.</td><td><span class="day-badge db-p">D</span></td></tr>
-      <tr id="logrow14"><td class="day-num">14</td><td>Jun 5 7PM&rarr;Jun 6 7PM</td><td>Internal QA. File organization (4 folders). Final invoice issued. Handover + written approval.</td><td><span class="day-badge db-p">D &mdash; Handover</span></td></tr>
-    </tbody>
-  </table>
-</div>
-
-<!-- REVIEW GATES -->
-<div class="panel" id="gates">
-  <div class="section-title">Four Review Gates &mdash; Client Approval Protocol</div>
-  <div class="gate-item">
-    <div><div class="gate-day-num">4</div><div class="gate-day-lbl">May 27</div></div>
-    <div>
-      <div class="gate-info-name">Phase A Gate &mdash; HATFAM Master Brand</div>
-      <div class="gate-info-desc">Present master mark concepts, color palette, and typography system. Two concept directions shown. Client selects and provides consolidated feedback within 24 hours. Approval locks the master brand. No reversions after this gate.</div>
-      <div class="gate-info-action">Output: Approved master mark &rarr; activates Phase B</div>
-    </div>
-  </div>
-  <div class="gate-item">
-    <div><div class="gate-day-num">8</div><div class="gate-day-lbl">May 31</div></div>
-    <div>
-      <div class="gate-info-name">Phase B Gate &mdash; DBTRAN &amp; Overflow Systems</div>
-      <div class="gate-info-desc">Present both sub-brand identity systems alongside the approved master brand. Client reviews Group coherence. Consolidated feedback within 24 hours. Approval locks both sub-brands.</div>
-      <div class="gate-info-action">Output: Approved sub-brand system &rarr; activates Phase C</div>
-    </div>
-  </div>
-  <div class="gate-item">
-    <div><div class="gate-day-num">11</div><div class="gate-day-lbl">Jun 3</div></div>
-    <div>
-      <div class="gate-info-name">Phase C Gate &mdash; Harmonization &amp; Stationery</div>
-      <div class="gate-info-desc">Present Polished Events harmonized identity, letterhead, business cards, and signage mockup. Client reviews full four-entity ecosystem together for the first time. Any stationery copy changes must be submitted at this gate. Consolidated feedback within 24 hours.</div>
-      <div class="gate-info-action">Output: Approved full ecosystem &rarr; activates Phase D</div>
-    </div>
-  </div>
-  <div class="gate-item">
-    <div><div class="gate-day-num">14</div><div class="gate-day-lbl">Jun 6</div></div>
-    <div>
-      <div class="gate-info-name">Final Handover Gate &mdash; Command Manual &amp; Asset Transfer</div>
-      <div class="gate-info-desc">Present completed Group Command Manual. Written approval from Dawit Hailu triggers: (1) final 40% VAT invoice issued &mdash; 110,400 ETB, (2) full IP and file ownership transferred, (3) Strategic Partnership Value Exchange obligations activated.</div>
-      <div class="gate-info-action">Output: Written approval + payment &rarr; full ownership transfer to HATFAM</div>
-    </div>
-  </div>
-</div>
-
-<!-- COMMUNICATION -->
-<div class="panel" id="comms">
-  <div class="section-title">Sprint Communication Standards</div>
-  <div class="comm-rule">
-    <div class="comm-rule-title">One Consolidated Round Per Phase</div>
-    <div class="comm-rule-body">Each phase has exactly one feedback round. All comments, changes, and questions must be compiled into a single message &mdash; not delivered piecemeal. Scattered feedback will be consolidated before actioning.</div>
-  </div>
-  <div class="comm-rule">
-    <div class="comm-rule-title">24-Hour Feedback Window</div>
-    <div class="comm-rule-body">From the moment a phase presentation is delivered, the client has 24 hours to return consolidated feedback. Silence after 24 hours is treated as approval and the sprint advances. This is a contractual term &mdash; reference Section 6 of the signed agreement.</div>
-  </div>
-  <div class="comm-rule">
-    <div class="comm-rule-title">Locked Phases Are Final</div>
-    <div class="comm-rule-body">Once a phase is approved, it is architecturally locked. Requesting changes to a locked phase triggers the scope-extension clause and invalidates the 14-day deadline. This protects both parties.</div>
-  </div>
-  <div class="comm-rule">
-    <div class="comm-rule-title">Direct Line for Operational Changes</div>
-    <div class="comm-rule-body">Additional raw assets or urgent operational changes &mdash; contact directly via WhatsApp/Telegram: +251 92 549 3131. Do not send raw assets via email during the sprint.</div>
-  </div>
-  <div class="comm-rule">
-    <div class="comm-rule-title">Presentation Format</div>
-    <div class="comm-rule-body">Each phase is presented as a structured Figma deck or PDF. Feedback must reference specific slides or elements &mdash; general impressions without specifics cannot be actioned within the sprint timeline.</div>
-  </div>
-  <div class="comm-rule">
-    <div class="comm-rule-title">Additional Business Card Contacts</div>
-    <div class="comm-rule-body">All additional executive names, titles, phone numbers, and emails must be submitted by Day 9 (May 31, 7PM) at the latest. Late submissions cannot be guaranteed within the 14-day window.</div>
-  </div>
-</div>
-
-</div>
+</div><!-- /sidebar -->
+</div><!-- /page-body -->
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────
 const SUPABASE_URL = 'https://ldvuajzoepeticwchxyf.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxkdnVhanpvZXBldGljd2NoeHlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk1NTU1NzUsImV4cCI6MjA5NTEzMTU3NX0.GuO78oohsRNnRbIYPBLQcw4U5rnhC0pryFhbgpkSe_g';
 const SPRINT_START = new Date('2026-05-23T19:00:00+03:00');
-const TOTAL_DAYS = 14;
-// PIN verified server-side via Supabase
-const TASK_IDS = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10',
-                  't11','t12','t13','t14','t15','t16','t17','t18',
-                  't19','t20','t21','t22','t23','t24','t25','t26',
-                  't27','t28','t29','t30','t31','t32','t33','t34','t35','t36','t37'];
+const TOTAL_DAYS   = 14;
+// PIN is verified server-side via Supabase RPC — not stored here
+const TASK_IDS     = ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10',
+                      't11','t12','t13','t14','t15','t16','t17','t18',
+                      't19','t20','t21','t22','t23','t24','t25','t26',
+                      't27','t28','t29','t30','t31','t32','t33','t34','t35','t36','t37'];
+
+const PHASE_TASKS = {
+  A: ['t1','t2','t3','t4','t5','t6','t7','t8','t9','t10'],
+  B: ['t11','t12','t13','t14','t15','t16','t17','t18'],
+  C: ['t19','t20','t21','t22','t23','t24','t25','t26'],
+  D: ['t27','t28','t29','t30','t31','t32','t33','t34','t35','t36','t37']
+};
+
+const GATES = [
+  { phase: 'A', day: 4,  date: 'May 27 — End of Day 4',  title: 'Phase A Gate — Master Brand',    desc: 'Present master brand concepts. Client has 24h to return consolidated feedback.' },
+  { phase: 'B', day: 8,  date: 'May 31 — End of Day 8',  title: 'Phase B Gate — Sub-Brands',      desc: 'Present DBTRAN & Overflow systems. Client has 24h to return consolidated feedback.' },
+  { phase: 'C', day: 11, date: 'Jun 3 — End of Day 11',  title: 'Phase C Gate — Harmonization',   desc: 'Present full harmonized system + stationery. 24h feedback window.' },
+  { phase: 'D', day: 14, date: 'Jun 6 — End of Day 14',  title: 'Final Handover Gate',             desc: 'Written approval + final invoice triggers full IP transfer to HATFAM.' }
+];
 
 // ─── STATE ────────────────────────────────────────────────
 let isEditMode = false;
-let taskState = {}; // {id: {checked, locked, sprint_day}}
-let syncTimeout = null;
+let taskState  = {};
 let pollInterval = null;
 
-// ─── SUPABASE HELPERS ─────────────────────────────────────
+// ─── SUPABASE ─────────────────────────────────────────────
 async function sbFetch(path, method, body) {
   setSyncStatus('syncing');
   try {
@@ -532,11 +1268,7 @@ async function loadTasks() {
   const data = await sbFetch('sprint_tasks?select=*');
   if (data) {
     data.forEach(function(row) {
-      taskState[row.id] = {
-        checked: row.checked,
-        locked: row.locked,
-        sprint_day: row.sprint_day
-      };
+      taskState[row.id] = { checked: row.checked, locked: row.locked, sprint_day: row.sprint_day };
     });
     renderAllTasks();
     setSyncStatus('connected');
@@ -549,11 +1281,8 @@ async function saveTask(id, checked) {
   taskState[id].checked = checked;
   taskState[id].sprint_day = day;
   taskState[id].locked = false;
-
   await sbFetch('sprint_tasks', 'POST', [{
-    id: id,
-    checked: checked,
-    locked: false,
+    id: id, checked: checked, locked: false,
     checked_at: checked ? new Date().toISOString() : null,
     sprint_day: day
   }]);
@@ -567,146 +1296,160 @@ async function lockPreviousDays() {
     if (t && t.checked && !t.locked && t.sprint_day < currentDay) {
       taskState[id].locked = true;
       anyLocked = true;
-      await sbFetch('sprint_tasks', 'POST', [{
-        id: id,
-        checked: true,
-        locked: true,
-        sprint_day: t.sprint_day
-      }]);
+      await sbFetch('sprint_tasks', 'POST', [{ id: id, checked: true, locked: true, sprint_day: t.sprint_day }]);
     }
   }
   if (anyLocked) renderAllTasks();
 }
 
-// ─── SPRINT DAY CALCULATION ───────────────────────────────
+// ─── SPRINT DAY ───────────────────────────────────────────
 function getCurrentSprintDay() {
   const now = new Date();
-  const msElapsed = now - SPRINT_START;
-  if (msElapsed < 0) return 0;
-  const dayElapsed = Math.floor(msElapsed / (1000 * 60 * 60 * 24));
-  return Math.min(dayElapsed + 1, TOTAL_DAYS);
+  const ms  = now - SPRINT_START;
+  if (ms < 0) return 0;
+  return Math.min(Math.floor(ms / 86400000) + 1, TOTAL_DAYS);
 }
 
 function getDayCycleWindow(day) {
-  const start = new Date(SPRINT_START.getTime() + (day - 1) * 24 * 60 * 60 * 1000);
-  const end = new Date(start.getTime() + 24 * 60 * 60 * 1000);
-  return {start: start, end: end};
+  const start = new Date(SPRINT_START.getTime() + (day - 1) * 86400000);
+  return { start: start, end: new Date(start.getTime() + 86400000) };
 }
 
-function formatTime(d) {
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getHours() + ':00';
+function fmtDate(d) {
+  const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return M[d.getMonth()] + ' ' + d.getDate();
+}
+
+function fmtTime(d) {
+  return fmtDate(d) + ', ' + d.getHours() + ':00';
 }
 
 function msToHHMM(ms) {
   if (ms <= 0) return '0h 0m';
-  const h = Math.floor(ms / 3600000);
-  const m = Math.floor((ms % 3600000) / 60000);
-  return h + 'h ' + m + 'm';
+  return Math.floor(ms / 3600000) + 'h ' + Math.floor((ms % 3600000) / 60000) + 'm';
 }
 
 function updateDayDisplay() {
   const day = getCurrentSprintDay();
   const now = new Date();
 
+  // Stepper
+  const phases = ['A','B','C','D'];
+  const phaseDay = { A: [1,4], B: [5,8], C: [9,11], D: [12,14] };
+  phases.forEach(function(p) {
+    const [start, end] = phaseDay[p];
+    const stepEl    = document.getElementById('step' + p);
+    const stepLabel = document.getElementById('stepLabel' + p);
+    let cls;
+    if (day > end)         cls = 'done';
+    else if (day >= start) cls = 'active';
+    else                   cls = 'pending';
+    stepEl.className    = 'stepper-num ' + cls;
+    stepLabel.className = 'stepper-label ' + cls;
+  });
+
+  // Next gate
+  let nextGate = null;
+  for (const g of GATES) {
+    if (day <= g.day) { nextGate = g; break; }
+  }
+  if (nextGate) {
+    document.getElementById('nextGateTitle').textContent = nextGate.title;
+    document.getElementById('nextGateDate').textContent  = nextGate.date;
+    document.getElementById('nextGateDesc').textContent  = nextGate.desc;
+  } else {
+    document.getElementById('nextGateTitle').textContent = 'Sprint Complete';
+    document.getElementById('nextGateDate').textContent  = 'Jun 6 — Handover delivered';
+    document.getElementById('nextGateDesc').textContent  = 'All phases approved and assets transferred.';
+  }
+
   if (day === 0) {
-    document.getElementById('currentDayDisplay').textContent = 'Pre-Sprint';
-    document.getElementById('dayWindowDisplay').textContent = 'Sprint starts May 23 at 7:00 PM';
-    document.getElementById('dayCycleDisplay').textContent = '';
-    document.getElementById('dayRemainingDisplay').textContent = '';
+    document.getElementById('sidebarDayNum').textContent     = 'Pre';
+    document.getElementById('sidebarDayLabel').textContent   = 'Sprint starts May 23 at 7PM EAT';
+    document.getElementById('sidebarDayWindow').textContent  = 'Sprint has not started yet';
+    document.getElementById('sidebarRemaining').innerHTML    = '—<span>remaining</span>';
     return;
   }
 
   if (day > TOTAL_DAYS) {
-    document.getElementById('currentDayDisplay').textContent = 'Sprint Complete';
-    document.getElementById('dayWindowDisplay').textContent = 'All 14 days completed';
-    document.getElementById('dayCycleDisplay').textContent = '';
-    document.getElementById('dayRemainingDisplay').textContent = 'Handover delivered Jun 6';
+    document.getElementById('sidebarDayNum').textContent     = '✓';
+    document.getElementById('sidebarDayLabel').textContent   = 'Sprint complete';
+    document.getElementById('sidebarDayWindow').textContent  = 'All 14 days completed';
+    document.getElementById('sidebarRemaining').innerHTML    = 'Handover delivered Jun 6<span></span>';
     return;
   }
 
-  const window = getDayCycleWindow(day);
-  const remaining = window.end - now;
+  const win = getDayCycleWindow(day);
+  const remaining = win.end - now;
+  document.getElementById('sidebarDayNum').textContent     = day;
+  document.getElementById('sidebarDayLabel').textContent   = 'of 14 sprint days';
+  document.getElementById('sidebarDayWindow').textContent  = fmtTime(win.start) + ' EAT\n→ ' + fmtTime(win.end) + ' EAT';
+  document.getElementById('sidebarRemaining').innerHTML    = msToHHMM(remaining) + '<span>remaining in this day</span>';
 
-  document.getElementById('currentDayDisplay').textContent = 'Day ' + day + ' of 14';
-  document.getElementById('dayWindowDisplay').textContent = 'Day ' + day + ': ' + formatTime(window.start) + ' \u2192 ' + formatTime(window.end);
-  document.getElementById('dayCycleDisplay').textContent = 'EAT (UTC+3) \u00B7 24-hour operational cycle';
-  document.getElementById('dayRemainingDisplay').textContent = msToHHMM(remaining) + ' remaining in this day';
-
-  // Highlight current day in log
+  // Highlight daily log row
   for (let i = 1; i <= 14; i++) {
     const row = document.getElementById('logrow' + i);
-    if (row) {
-      row.classList.remove('today-row', 'active-row');
-      if (i === day) row.classList.add('today-row');
-    }
+    if (row) { row.classList.toggle('today-row', i === day); }
   }
 }
 
 // ─── SYNC STATUS ──────────────────────────────────────────
-function setSyncStatus(status) {
+function setSyncStatus(s) {
   const badge = document.getElementById('syncBadge');
-  const text = document.getElementById('syncText');
+  const text  = document.getElementById('syncText');
   badge.className = 'sync-badge';
-  if (status === 'connecting') { badge.classList.add('sync-connecting'); text.textContent = 'Connecting'; }
-  else if (status === 'syncing') { badge.classList.add('sync-syncing'); text.textContent = 'Syncing'; }
-  else if (status === 'connected') { badge.classList.add('sync-connected'); text.textContent = 'Connected'; }
-  else if (status === 'error') { badge.classList.add('sync-error'); text.textContent = 'Offline'; }
+  const map = { connecting:'sync-connecting Connecting', syncing:'sync-syncing Syncing', connected:'sync-connected Connected', error:'sync-error Offline' };
+  const [cls, lbl] = map[s].split(' ');
+  badge.classList.add(cls);
+  text.textContent = lbl;
 }
 
 // ─── RENDER ───────────────────────────────────────────────
 function renderAllTasks() {
-  let total = TASK_IDS.length;
-  let done = 0;
+  let total = TASK_IDS.length, done = 0;
 
   TASK_IDS.forEach(function(id) {
-    const el = document.getElementById(id);
+    const el  = document.getElementById(id);
     const txt = document.getElementById('txt_' + id);
     if (!el) return;
 
-    const t = taskState[id] || {checked: false, locked: false};
-
+    const t = taskState[id] || { checked: false, locked: false };
     el.className = 'check';
-    if (t.locked && t.checked) {
-      el.classList.add('locked-checked');
-      txt.classList.add('done');
-      done++;
-    } else if (t.checked) {
-      el.classList.add('checked');
-      txt.classList.add('done');
-      done++;
-    } else if (t.locked && !t.checked) {
-      el.classList.add('locked-unchecked');
-      txt.classList.remove('done');
-    } else {
-      txt.classList.remove('done');
-    }
+    txt.classList.remove('done');
 
-    if (!isEditMode) {
-      el.classList.add('view-only');
-    }
+    if (t.locked && t.checked)    { el.classList.add('locked-checked'); txt.classList.add('done'); done++; }
+    else if (t.checked)           { el.classList.add('checked'); txt.classList.add('done'); done++; }
+    else if (t.locked && !t.checked) { el.classList.add('locked-unchecked'); }
+
+    if (!isEditMode) el.classList.add('view-only');
   });
 
+  // Overall stats
   document.getElementById('checkedCount').textContent = done;
   const pct = Math.round((done / total) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressPct').textContent = pct + '% complete (' + done + ' / ' + total + ' tasks)';
+  document.getElementById('progressPct').textContent  = pct + '%';
+  document.getElementById('progressOf').textContent   = done + ' / ' + total + ' tasks';
+
+  // Per-phase progress
+  Object.keys(PHASE_TASKS).forEach(function(phase) {
+    const ids   = PHASE_TASKS[phase];
+    const pdone = ids.filter(id => (taskState[id] || {}).checked).length;
+    const ppct  = Math.round((pdone / ids.length) * 100);
+    const fillEl = document.getElementById('fill' + phase);
+    const pctEl  = document.getElementById('pct'  + phase);
+    if (fillEl) fillEl.style.width = ppct + '%';
+    if (pctEl)  pctEl.textContent  = ppct + '%';
+  });
 }
 
 // ─── TASK TOGGLE ──────────────────────────────────────────
 async function toggleTask(id) {
   if (!isEditMode) return;
-
-  const t = taskState[id] || {checked: false, locked: false};
-
-  // Locked tasks cannot be changed
-  if (t.locked) {
-    showToast('This task is locked \u2014 day has ended.');
-    return;
-  }
-
+  const t = taskState[id] || { checked: false, locked: false };
+  if (t.locked) { showToast('This task is locked — day has ended.'); return; }
   const newChecked = !t.checked;
-  taskState[id] = {checked: newChecked, locked: false, sprint_day: getCurrentSprintDay()};
+  taskState[id] = { checked: newChecked, locked: false, sprint_day: getCurrentSprintDay() };
   renderAllTasks();
   await saveTask(id, newChecked);
 }
@@ -714,7 +1457,6 @@ async function toggleTask(id) {
 // ─── EDIT MODE ────────────────────────────────────────────
 function handleEditClick() {
   if (isEditMode) {
-    // Lock/exit edit mode
     isEditMode = false;
     document.getElementById('editBadge').classList.remove('active');
     document.getElementById('editBadgeText').textContent = 'View Only';
@@ -726,31 +1468,43 @@ function handleEditClick() {
     document.getElementById('pinModal').classList.add('show');
     document.getElementById('pinInput').value = '';
     document.getElementById('pinError').style.display = 'none';
+    document.getElementById('pinBtn').disabled = false;
+    document.getElementById('pinBtn').textContent = 'Unlock';
     setTimeout(function(){ document.getElementById('pinInput').focus(); }, 100);
   }
 }
 
+function closePin() {
+  document.getElementById('pinModal').classList.remove('show');
+  document.getElementById('pinInput').value = '';
+  document.getElementById('pinError').style.display = 'none';
+}
+
 async function checkPin() {
-  const val = document.getElementById('pinInput').value;
+  const val = document.getElementById('pinInput').value.trim();
   if (!val) return;
 
-  // Hash the input using MD5 via Supabase RPC and compare
-  const inputHash = await md5(val);
+  const btn = document.getElementById('pinBtn');
+  btn.disabled = true;
+  btn.textContent = 'Verifying…';
+  document.getElementById('pinError').style.display = 'none';
 
-  setSyncStatus('syncing');
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/sprint_auth?pin_hash=eq.' + encodeURIComponent(inputHash) + '&select=pin_hash', {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/rpc/verify_pin', {
+      method: 'POST',
       headers: {
         'apikey': SUPABASE_KEY,
-        'Authorization': 'Bearer ' + SUPABASE_KEY
-      }
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ input_pin: val })
     });
-    const data = await res.json();
-    setSyncStatus('connected');
 
-    if (data && data.length > 0) {
+    const ok = res.ok ? await res.json() : false;
+
+    if (ok === true) {
       isEditMode = true;
-      document.getElementById('pinModal').classList.remove('show');
+      closePin();
       document.getElementById('editBadge').classList.add('active');
       document.getElementById('editBadgeText').textContent = 'Edit Mode';
       document.getElementById('lockIcon').innerHTML = '&#128275;';
@@ -761,91 +1515,24 @@ async function checkPin() {
       document.getElementById('pinError').style.display = 'block';
       document.getElementById('pinInput').value = '';
       document.getElementById('pinInput').focus();
+      btn.disabled = false;
+      btn.textContent = 'Unlock';
     }
   } catch(e) {
-    setSyncStatus('error');
+    document.getElementById('pinError').textContent = 'Connection error. Try again.';
     document.getElementById('pinError').style.display = 'block';
-    document.getElementById('pinInput').value = '';
+    btn.disabled = false;
+    btn.textContent = 'Unlock';
   }
-}
-
-// Lightweight MD5 implementation for PIN hashing
-async function md5(str) {
-  // Use SubtleCrypto if available, fallback to pure JS md5
-  function safeAdd(x, y) {
-    var lsw = (x & 0xffff) + (y & 0xffff);
-    var msw = (x >> 16) + (y >> 16) + (lsw >> 16);
-    return (msw << 16) | (lsw & 0xffff);
-  }
-  function bitRotateLeft(num, cnt) { return (num << cnt) | (num >>> (32 - cnt)); }
-  function md5cmn(q, a, b, x, s, t) { return safeAdd(bitRotateLeft(safeAdd(safeAdd(a, q), safeAdd(x, t)), s), b); }
-  function md5ff(a,b,c,d,x,s,t){return md5cmn((b&c)|((~b)&d),a,b,x,s,t);}
-  function md5gg(a,b,c,d,x,s,t){return md5cmn((b&d)|(c&(~d)),a,b,x,s,t);}
-  function md5hh(a,b,c,d,x,s,t){return md5cmn(b^c^d,a,b,x,s,t);}
-  function md5ii(a,b,c,d,x,s,t){return md5cmn(c^(b|(~d)),a,b,x,s,t);}
-
-  function md5blks(s) {
-    var md5blks=[],i;
-    for(i=0;i<64;i+=4){md5blks[i>>2]=s.charCodeAt(i)+(s.charCodeAt(i+1)<<8)+(s.charCodeAt(i+2)<<16)+(s.charCodeAt(i+3)<<24);}
-    return md5blks;
-  }
-
-  var i, hex_chr = '0123456789abcdef'.split('');
-  function rhex(n){var s='',j=0;for(;j<4;j++){s+=hex_chr[(n>>(j*8+4))&0x0f]+hex_chr[(n>>(j*8))&0x0f];}return s;}
-  function hex(x){for(var i=0;i<x.length;i++){x[i]=rhex(x[i]);}return x.join('');}
-
-  function md5core(x, len) {
-    x[len >> 5] |= 0x80 << (len % 32);
-    x[(((len + 64) >>> 9) << 4) + 14] = len;
-    var i, olda, oldb, oldc, oldd, a=1732584193, b=-271733879, c=-1732584194, d=271733878;
-    for(i=0;i<x.length;i+=16){
-      olda=a;oldb=b;oldc=c;oldd=d;
-      a=md5ff(a,b,c,d,x[i],7,-680876936);d=md5ff(d,a,b,c,x[i+1],12,-389564586);c=md5ff(c,d,a,b,x[i+2],17,606105819);b=md5ff(b,c,d,a,x[i+3],22,-1044525330);
-      a=md5ff(a,b,c,d,x[i+4],7,-176418897);d=md5ff(d,a,b,c,x[i+5],12,1200080426);c=md5ff(c,d,a,b,x[i+6],17,-1473231341);b=md5ff(b,c,d,a,x[i+7],22,-45705983);
-      a=md5ff(a,b,c,d,x[i+8],7,1770035416);d=md5ff(d,a,b,c,x[i+9],12,-1958414417);c=md5ff(c,d,a,b,x[i+10],17,-42063);b=md5ff(b,c,d,a,x[i+11],22,-1990404162);
-      a=md5ff(a,b,c,d,x[i+12],7,1804603682);d=md5ff(d,a,b,c,x[i+13],12,-40341101);c=md5ff(c,d,a,b,x[i+14],17,-1502002290);b=md5ff(b,c,d,a,x[i+15],22,1236535329);
-      a=md5gg(a,b,c,d,x[i+1],5,-165796510);d=md5gg(d,a,b,c,x[i+6],9,-1069501632);c=md5gg(c,d,a,b,x[i+11],14,643717713);b=md5gg(b,c,d,a,x[i],20,-373897302);
-      a=md5gg(a,b,c,d,x[i+5],5,-701558691);d=md5gg(d,a,b,c,x[i+10],9,38016083);c=md5gg(c,d,a,b,x[i+15],14,-660478335);b=md5gg(b,c,d,a,x[i+4],20,-405537848);
-      a=md5gg(a,b,c,d,x[i+9],5,568446438);d=md5gg(d,a,b,c,x[i+14],9,-1019803690);c=md5gg(c,d,a,b,x[i+3],14,-187363961);b=md5gg(b,c,d,a,x[i+8],20,1163531501);
-      a=md5gg(a,b,c,d,x[i+13],5,-1444681467);d=md5gg(d,a,b,c,x[i+2],9,-51403784);c=md5gg(c,d,a,b,x[i+7],14,1735328473);b=md5gg(b,c,d,a,x[i+12],20,-1926607734);
-      a=md5hh(a,b,c,d,x[i+5],4,-378558);d=md5hh(d,a,b,c,x[i+8],11,-2022574463);c=md5hh(c,d,a,b,x[i+11],16,1839030562);b=md5hh(b,c,d,a,x[i+14],23,-35309556);
-      a=md5hh(a,b,c,d,x[i+1],4,-1530992060);d=md5hh(d,a,b,c,x[i+4],11,1272893353);c=md5hh(c,d,a,b,x[i+7],16,-155497632);b=md5hh(b,c,d,a,x[i+10],23,-1094730640);
-      a=md5hh(a,b,c,d,x[i+13],4,681279174);d=md5hh(d,a,b,c,x[i],11,-358537222);c=md5hh(c,d,a,b,x[i+3],16,-722521979);b=md5hh(b,c,d,a,x[i+6],23,76029189);
-      a=md5hh(a,b,c,d,x[i+9],4,-640364487);d=md5hh(d,a,b,c,x[i+12],11,-421815835);c=md5hh(c,d,a,b,x[i+15],16,530742520);b=md5hh(b,c,d,a,x[i+2],23,-995338651);
-      a=md5ii(a,b,c,d,x[i],6,-198630844);d=md5ii(d,a,b,c,x[i+7],10,1126891415);c=md5ii(c,d,a,b,x[i+14],15,-1416354905);b=md5ii(b,c,d,a,x[i+5],21,-57434055);
-      a=md5ii(a,b,c,d,x[i+12],6,1700485571);d=md5ii(d,a,b,c,x[i+3],10,-1894986606);c=md5ii(c,d,a,b,x[i+10],15,-1051523);b=md5ii(b,c,d,a,x[i+1],21,-2054922799);
-      a=md5ii(a,b,c,d,x[i+8],6,1873313359);d=md5ii(d,a,b,c,x[i+15],10,-30611744);c=md5ii(c,d,a,b,x[i+6],15,-1560198380);b=md5ii(b,c,d,a,x[i+13],21,1309151649);
-      a=md5ii(a,b,c,d,x[i+4],6,-145523070);d=md5ii(d,a,b,c,x[i+11],10,-1120210379);c=md5ii(c,d,a,b,x[i+2],15,718787259);b=md5ii(b,c,d,a,x[i+9],21,-343485551);
-      a=safeAdd(a,olda);b=safeAdd(b,oldb);c=safeAdd(c,oldc);d=safeAdd(d,oldd);
-    }
-    return [a,b,c,d];
-  }
-
-  function utf8Encode(s) {
-    return unescape(encodeURIComponent(s));
-  }
-
-  function str2binl(str) {
-    var bin=[];
-    for(var i=0;i<str.length*8;i+=8){bin[i>>5]|=(str.charCodeAt(i/8)&0xff)<<(i%32);}
-    return bin;
-  }
-
-  var utf8str = utf8Encode(str);
-  return hex(md5core(str2binl(utf8str), utf8str.length * 8));
 }
 
 // ─── PHASE TOGGLE ─────────────────────────────────────────
 function togglePhase(letter) {
   const body = document.getElementById('body' + letter);
-  const tog = document.getElementById('toggle' + letter);
-  if (body.style.display === 'none') {
-    body.style.display = '';
-    tog.innerHTML = '&#9660;';
-  } else {
-    body.style.display = 'none';
-    tog.innerHTML = '&#9658;';
-  }
+  const tog  = document.getElementById('toggle' + letter);
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  tog.textContent = hidden ? '▾' : '▸';
 }
 
 // ─── TAB SWITCH ───────────────────────────────────────────
@@ -853,35 +1540,30 @@ function switchTab(id) {
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
   document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
-  var tabs = ['phases','daily','gates','comms'];
+  const tabs = ['phases','daily','gates','comms'];
   document.querySelectorAll('.tab')[tabs.indexOf(id)].classList.add('active');
 }
 
 // ─── TOAST ────────────────────────────────────────────────
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(function(){ t.classList.remove('show'); }, 2800);
 }
 
-// ─── POLL FOR CHANGES (for Dawit's live view) ─────────────
+// ─── POLL ─────────────────────────────────────────────────
 function startPolling() {
   pollInterval = setInterval(async function() {
     if (!isEditMode) {
       const data = await sbFetch('sprint_tasks?select=*');
       if (data) {
         data.forEach(function(row) {
-          taskState[row.id] = {
-            checked: row.checked,
-            locked: row.locked,
-            sprint_day: row.sprint_day
-          };
+          taskState[row.id] = { checked: row.checked, locked: row.locked, sprint_day: row.sprint_day };
         });
         renderAllTasks();
       }
     }
-  }, 15000); // poll every 15 seconds
+  }, 15000);
 }
 
 // ─── INIT ─────────────────────────────────────────────────
@@ -892,12 +1574,7 @@ async function init() {
   await lockPreviousDays();
   renderAllTasks();
   startPolling();
-
-  // Update day display every minute
-  setInterval(function() {
-    updateDayDisplay();
-    lockPreviousDays();
-  }, 60000);
+  setInterval(function() { updateDayDisplay(); lockPreviousDays(); }, 60000);
 }
 
 init();
